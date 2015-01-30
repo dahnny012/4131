@@ -1,0 +1,27 @@
+#Chapter 1
+
+B:
+1.List three advantages of using DBMS compared to using File
+System to store your data.
+    - A DBMS is able to provide faster searches because it is able to index results.  
+    - A DBMS provides allows concurrent users from reading and writing to the databases.
+    - Provides a abstraction to managing data to speed up application development time.
+    
+2. What are the 6 steps in designing a DBMS?
+    1. Requirement analysis
+    2. Conceptual Database Design
+    3. Logical Database Design 
+    4. Scheme Refinement 
+    5. Physical Database Design 
+    6. Application and Security Design 
+    
+    
+C.  Imagine you are designing a Database for an
+Auction House. The Database will contain information about its Customers
+(identified uniquely by customer id/custid) and the Products they bought
+(identified uniquely by product id/pid). For simplicity, each customer can
+only purchase in the Auction House once a day (identified by date id/did).
+For each situation below, draw an ER diagram that describes it.
+
+    a.We want to keep track only the last time each customer buy a
+    specific set of products.

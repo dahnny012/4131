@@ -14,14 +14,3 @@ System to store your data.
     4. Scheme Refinement 
     5. Physical Database Design 
     6. Application and Security Design 
-    
-    
-C.  Imagine you are designing a Database for an
-Auction House. The Database will contain information about its Customers
-(identified uniquely by customer id/custid) and the Products they bought
-(identified uniquely by product id/pid). For simplicity, each customer can
-only purchase in the Auction House once a day (identified by date id/did).
-For each situation below, draw an ER diagram that describes it.
-
-    a.We want to keep track only the last time each customer buy a
-    specific set of products.

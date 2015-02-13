@@ -4,7 +4,7 @@ METHOD = 0
 PATH = 1
 
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-server_socket.bind(("127.0.0.1",9000))
+server_socket.bind(("127.0.0.1",9001))
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server_socket.listen(5)
 
@@ -14,7 +14,7 @@ def dispatcher(header,socket):
 	request = headers[0].split(" ")
 	if request[METHOD] == "GET":
 		try:
-			router[request[PATH]](socket)
+			router[request[PATH]](socket,request[PATH])
 		except:
 			print("ERROR")
 			error = "404 Niggie"
@@ -22,14 +22,40 @@ def dispatcher(header,socket):
 	if request[METHOD] == "HEAD":
 		return
 
-def serveIndex(req):
-	file = open('HW1.html','rb')
+def getFileType(fn):
+	if ".css" in fn:
+		return "text/css"
+	if ".html" in fn:
+		return "text/html"
+		
+	return "text/plain"
+	
+	
+def serveIndex(req,fn):
+	req.send(bytes('HTTP/1.0 200 OK\r\n','utf-8'))
+	req.send(bytes("Content-Type: text/html\r\n\r\n",'utf-8'))
+	file = open('Index.html','rb')
 	read=file.read(1024)
 	while(read):	
 		req.send(read)
 		read = file.read(1024)
+		
 
-router = {"/":serveIndex}
+def serveFile(req,fn):
+	fileType = getFileType(fn)
+	req.send(bytes('HTTP/1.0 200 OK\r\n','utf-8'))
+	req.send(bytes("Content-Type:"+fileType+"\r\n\r\n",'utf-8'))
+	file = open(fn[1:],'rb')
+	read = file.read(1024)
+	while(read):
+		req.send(read)
+		read = file.read(1024)
+
+
+router = {"/":serveIndex,
+"/Style.css":serveFile,
+"/Form.html":serveFile}
+
 
 
 while 1:

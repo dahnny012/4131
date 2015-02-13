@@ -4,7 +4,7 @@ METHOD = 0
 PATH = 1
 
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-server_socket.bind(("127.0.0.1",9001))
+server_socket.bind(("127.0.0.1",9002))
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server_socket.listen(5)
 
@@ -16,9 +16,9 @@ def dispatcher(header,socket):
 		try:
 			router[request[PATH]](socket,request[PATH])
 		except:
-			print("ERROR")
-			error = "404 Niggie"
-			
+			socket.send(bytes('HTTP/1.0 404 Error\r\n','utf-8'))
+			socket.send(bytes("Content-Type: text/plain\r\n\r\n",'utf-8'))
+			socket.send(bytes("Page not found",'utf-8'))
 	if request[METHOD] == "HEAD":
 		return
 
@@ -53,6 +53,7 @@ def serveFile(req,fn):
 
 
 router = {"/":serveIndex,
+"/Index.html":serveFile,
 "/Style.css":serveFile,
 "/Form.html":serveFile}
 

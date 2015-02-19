@@ -118,4 +118,59 @@ D.
     );
     
     
-4.
+C.
+    1.
+    Consider the following schema:
+        - Students (sid: Integer, sname: String, year: Integer)
+        - Courses (cid: Integer, cname: String, department: String)
+        - OneStop (sid: Integer, cid: Integer, credits: Integer)
+    
+    a. 
+        Project(snames){
+            Select(cname = "RDBMS" And cname ="NoSQL"){
+                natural_join(Onestop,Students,
+                 Select(cname = "RDBMS" Or "NoSQL")
+                )
+            }
+        }
+        
+        
+    b.
+         Project(snames){
+            natural_join(Students,Select(department = "Computer Science"){
+                natural_join(Onestop,Courses)
+            })
+         }
+    c.
+        Project(cid){
+            Select(cid != cid2){
+                natural_join(Onestop,Rename(sid,cid2,credits){Onestop})
+            }
+        }
+    d.
+
+        project(sid,sid2){
+            Select(cid != cid2 && year1 > year2){
+                Cartesian(Students,Rename(sid2,year2){
+                    Students
+                }
+            }
+        }
+        
+    e.
+        Project(sid){
+            natural_join(Students,
+                Select(department = "Computer Science"){
+                    natural_join(Onestop,Courses)
+                },
+                Select(department ="Electrical Engineering"){
+                    natural_join(Onestop,Courses)
+                }
+            )
+         }
+         
+    2.
+        Consider the following schema:
+        - SuppInfo (suppid: Integer, prodid: Integer)
+        - Purchases (purchaseid: Integer, custid: Integer, prodid: Integer,purchaseMethod: Integer)
+        

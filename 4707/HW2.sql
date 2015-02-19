@@ -174,3 +174,17 @@ C.
         - SuppInfo (suppid: Integer, prodid: Integer)
         - Purchases (purchaseid: Integer, custid: Integer, prodid: Integer,purchaseMethod: Integer)
         
+        a.
+        Project(suppid,suppid2){
+            Intersection(
+                Project(suppid,prodid){SuppInfo},
+                Project(suppid2,prodid2){SuppInfo2}
+            )
+        }
+        
+        
+        b.
+        Project(custids){
+            
+        }
+        

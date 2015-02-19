@@ -5,7 +5,7 @@ by a user program? If so, for what purpose?
 An interrupt is when the operating system generates a signal
 that the OS may choose to handle.Like IO , events , and errors.
 
-A Trap is a subset of interrupts and its purpose is to signal 
+A Trap is a subset of interrupts and its purpose is to signals like 
 divide by zero or invalid memory access.
 
 A user can signal a trap by dividing by zero or trying to access
@@ -15,17 +15,18 @@ A user may choose to wrap a potential trap into a try catch block
 because they want the program to handle it and not terminate the process.
 
 
-// This might need refactoring
 2. Why is the separation of mechanism and policy
 desirable?
 
 Seperating mechanism and policy allows for more configurations. In the context
 of microkernels since most of the policies is left to the user to implement,
 if the policies and mechanisms were tightly coupled it would not be easy to
-implement. The designer of the kernel can't account for every single policy 
-combination with the mechanisms
+implement. A designer of the kernel can't account for every single policy 
+combination with the mechanisms. The system is then seperated so that the mechanism 
+dictates how things are done but it has does not limit on what policies can be 
+implemented.
 
-// Probably needs refactoring
+
 3. What are the advantages of using loadable kernel
 modules?
 
@@ -34,17 +35,18 @@ The system could only load what was needed and unload when the module
 is no longer being used to free memory/cpu processing time.
 
 It also allows the designer to extend new features to the kernel.
-Like supporting new devices 
+It would not require a recompilation of the base kernel + the new feature.
+So it would be much easier to add support for new devices or file systems.
+
 
 
 4. Explain the role of the init process on UNIX and Linux
 systems in regards to process termination.
 
-When a process terminates and it has children that it did not terminate,
+When a process terminates and it has children running that it does not terminate
 the init process inherits them as "Orphans".
-// What then?
 
-// Needs refactoring
+
 5.  Can a multithreaded solution using multiple user-level
 threads achieve better performance on a multiprocessor system than on a single
 processor system? Explain.
@@ -78,7 +80,6 @@ b. How many unique threads are created?
 2 threads are created
 
 
-// Refactor some more
 7. : A variation of the round-robin scheduler is the
 regressive round-robin scheduler. This scheduler assigns each process a time
 quantum and a priority. The initial value of a time quantum is 50
@@ -91,16 +92,18 @@ milliseconds, but its priority remains the same. What type of process (CPU-bound
 or I/O-bound) does the regressive round-robin scheduler favor? Explain.
 
 Regressive round robin favors CPU-Bound processes because it elevates their priority 
-and also gives them more of the time quantum. This algorithm tries to optimize on the
+and also gives them more of the time quantum. Large processes that require more 
+time quantum than alotted will be prioritized to finish since they are given extra
+time and priority for not finishing. This algorithm tries to optimize on the
 the fact that blocking io processes do not need as much cpu computation because they 
 are waiting on IO. 
 
-8. ---> Drawing
+8. ---> See Attached Page.
 
 
-// Refactor on b.
 9. Consider a variant of the RR scheduling algorithm
 where the entries in the ready queue are pointers to the PCBs.
+
 a. What would be the effect of putting two pointers to the same process in the
 ready queue?
 
@@ -127,7 +130,6 @@ just allow it a bigger time quantum.
 
 
 
-// Might need a refactor.
 10. Consider a preemptive priority scheduling algorithm
 based on dynamically changing priorities. Larger priority numbers imply higher
 priority. When a process is waiting for the CPU (in the ready queue, but not

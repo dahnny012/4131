@@ -1,10 +1,11 @@
 import socket
 import io,os,sys
+import threading
 METHOD = 0
 PATH = 1
-PORT = 9000
+PORT = 9001
 
-for i in range(0,len(sys.argv))
+for i in range(0,len(sys.argv)):
     if i==1:
 		port = sys.argv[i]
 
@@ -23,36 +24,33 @@ def dispatcher(header,socket):
 			print(request)
 			router[request[PATH]](socket,request[PATH])
 		except:
-			socket.send(bytes('HTTP/1.0 404 Not Found\r\n','utf-8'))
-			socket.send(bytes("Content-Type: text/plain\r\n\r\n",'utf-8'))
-			socket.send(bytes("Page not found",'utf-8'))
+			socket["/404.html"](socket,request,False,"404 Error")
 	if request[METHOD] == "HEAD":
-		router[request[PATH]](socket,request[PATH],True)
-		return
+		try:
+			router[request[PATH]](socket,request[PATH],True)
+		except:
+			socket["/404.html"](socket,request,True,"404 Error")
 
 def getFileType(fn):
 	if ".css" in fn:
 		return "text/css"
 	if ".html" in fn:
 		return "text/html"
-		
 	return "text/plain"
 	
 #Route Handlers
-def serveIndex(req,fn,head=false):
+def serveIndex(req,fn,head=False):
 	req.send(bytes('HTTP/1.0 200 OK\r\n','utf-8'))
 	req.send(bytes("Content-Type: text/html\r\n\r\n",'utf-8'))
-	file = open('Index.html','rb')
+	file = open('restaurants.html','rb')
 	if not head:
 		read=file.read(1024)
 		while(read):	
 			req.send(read)
 			read = file.read(1024)
 		
-
-def serveFile(req,fn,head=false):
+def serveFile(req,fn,head=False,code="200 OK"):
 	fn = fn[1:]
-	code = "200 OK"
 	fileType = getFileType(fn)
 	if not checkPermission(fn):
 			fn = "403.html"
@@ -68,19 +66,25 @@ def serveFile(req,fn,head=false):
 			
 def checkPermission(filepath):
   st = os.stat(filepath)
-  return bool(st.st_mode & stat.S_IRGRP)
+  return bool(st.st_mode & st.S_IRGRP)
 
 router = {"/":serveIndex,
-"/Index.html":serveFile,
-"/Style.css":serveFile,
-"/Form.html":serveFile
-"/private.html":serveFile}
+"/restaurants.html":serveFile,
+"/private.html":serveFile,
+"/404.html":serveFile,
+}
 
-#Accept clients
-while 1:
+
+def accept(server_socket):
 	(client_socket,address) = server_socket.accept()
 	header = client_socket.recv(4096)
 	dispatcher(header,client_socket)
 	client_socket.close()
+	
+#Accept clients
+for id in range(0,5):
+			t = threading.Thread(target=accept, args=(server_socket,))
+			t.start()
+	
 	
 

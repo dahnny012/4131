@@ -185,6 +185,64 @@ C.
         
         b.
         Project(custids){
-            
+			Select(suppid=suppid2 & prodid != proid2){
+			Union(
+                Project(suppid,prodid,purchaseMethod){Purchases},
+                Project(suppid2,prodid2,purchaseMethod){
+					Rename(Purchases2){
+						Purchases
+                }}
+            )
         }
         
+        
+    3.
+		- Bars(barId, location)
+		- Beers(beerId, name)
+		- Drinkers(did, age)
+		- Serves(barId, beerId)
+		- Frequents(did, barId)
+		- Likes(did, beerId)
+
+		
+		
+		Project(did){
+			Natural_join(
+				Natural_Join(
+					Natural_Join(Drinkers,Frequents),Serves
+				),
+			Likes)
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

@@ -25,36 +25,13 @@ B.
     );
     
     CREATE TABLE transactions(
-    pid number(9), cid number(9),did varchar(255),
+    pid number(9), cid number(9),did varchar(255),tid number(9)
     PRIMARY KEY(cid,pid,did),
     FOREIGN KEY (cid) REFERENCES customer(cid),
     FOREIGN KEY (pid) REFERENCES products(pid),
     );
-    
 C.
 
-    CREATE TABLE product (pid number(9),
-    PRIMARY KEY(pid)
-    );
-    
-    CREATE TABLE customer (cid number(9),pid number(9),
-    PRIMARY KEY(cid)
-    FOREIGN KEY(pid) REFERENCES products(pid)
-    );
-    
-    CREATE TABLE transactions(
-    pid number(9), cid number(9),did varchar(255),
-    PRIMARY KEY(cid,pid),
-    FOREIGN KEY (cid) REFERENCES customer(cid),
-    FOREIGN KEY (pid) REFERENCES product(pid),
-    );
-    
-D.
-
-    CREATE TABLE customer (cid number(9),
-    PRIMARY KEY(cid)
-    );
-    
     CREATE TABLE products(pid number(9),
     PRIMARY KEY(pid)
     );
@@ -62,13 +39,24 @@ D.
     CREATE TABLE transactions(
     pid number(9), cid number(9),did varchar(255),
     PRIMARY KEY(cid,did),
-    FOREIGN KEY (cid) REFERENCES customer(cid),
     FOREIGN KEY (pid) REFERENCES products(pid),
+    );
+D.
+    CREATE TABLE product (pid number(9),
+    PRIMARY KEY(pid)
+    );
+    
+    CREATE TABLE transactions(
+    pid number(9), cid number(9),did varchar(255),
+    PRIMARY KEY(cid),
+    FOREIGN KEY (pid) REFERENCES product(pid),
     );
     
 2.
-    CREATE TABLE books(ISBN number(13), name varchar(255),
-    PRIMARY KEY(ISBN)
+    CREATE TABLE books(ISBN number(13), name varchar(255),authName varchar(255),pubName varchar(255)
+    PRIMARY KEY(ISBN,authName)
+    FOREIGN KEY(author_name) references authors(authName)
+    FOREIGN KEY(pubName) references publishers(pubName)
     );
     
     CREATE TABLE publishers(pubName varchar(255),
@@ -111,7 +99,7 @@ D.
     );
     
     CREATE TABLE grad_student(name varchar(55), 
-    year number(4) NOT NULL,
+    year number(4),
     SSN number(8),
     PRIMARY KEY(SSN,name,year),
     FOREIGN KEY(SSN) REFERENCES professor(SSN)

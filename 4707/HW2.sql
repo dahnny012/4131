@@ -37,8 +37,8 @@ C.
     );
     
     CREATE TABLE transactions(
-    pid number(9), cid number(9),did varchar(255),
-    PRIMARY KEY(cid,did),
+    pid number(9), cid number(9),did varchar(255) NOT NULL,
+    PRIMARY KEY(cid,pid),
     FOREIGN KEY (pid) REFERENCES products(pid),
     );
 D.
@@ -47,7 +47,8 @@ D.
     );
     
     CREATE TABLE transactions(
-    pid number(9), cid number(9),did varchar(255),
+    pid number(9), cid number(9),
+    did varchar(255) NOT NULL,
     PRIMARY KEY(cid),
     FOREIGN KEY (pid) REFERENCES product(pid),
     );
@@ -57,14 +58,16 @@ D.
     PRIMARY KEY(ISBN,authName)
     FOREIGN KEY(author_name) references authors(authName)
     FOREIGN KEY(pubName) references publishers(pubName)
+    name NOT NULL,
     );
     
     CREATE TABLE publishers(pubName varchar(255),
     PRIMARY KEY(pubName)
     );
     
-    CREATE TABLE authors(authName varchar(255),
-    PRIMARY KEY(authName)
+    CREATE TABLE authors(authName varchar(255),ISBN number(13)
+    PRIMARY KEY(authName,ISBN),
+    FOREIGN KEY(ISBN) references books(ISBN)
     );
     
     CREATE TABLE categories(catName varchar(255),
@@ -112,37 +115,30 @@ C.
         - Students (sid: Integer, sname: String, year: Integer)
         - Courses (cid: Integer, cname: String, department: String)
         - OneStop (sid: Integer, cid: Integer, credits: Integer)
-    
-    a. 
+
+        
+    a.
         Project(snames){
-            Select(cname = "RDBMS" And cname ="NoSQL"){
-                natural_join(Onestop,Students,
-                 Select(cname = "RDBMS" Or "NoSQL")
-                )
-            }
+        Natural_join(Onestop Divided by Project(cids){Select(cname = "RDBMS" or "NoSQL"){Courses}},
+                     Students)
         }
+        
         
         
     b.
-         Project(snames){
-            natural_join(Students,Select(department = "Computer Science"){
-                natural_join(Onestop,Courses)
-            })
-         }
+        Project(snames){
+            Natural_join(Students, Onestop Divided By Project(cids){Select(department = "Computer Science"){Courses}})
+        }
+        
     c.
         Project(cid){
-            Select(cid != cid2){
-                natural_join(Onestop,Rename(sid,cid2,credits){Onestop})
+            Select(sid != sid2){
+                Natural_join(Onestop,Rename(sid2,cid){Onestop})
             }
         }
     d.
-
-        project(sid,sid2){
-            Select(cid != cid2 && year1 > year2){
-                Cartesian(Students,Rename(sid2,year2){
-                    Students
-                }
-            }
+        Project(sid,sid2){
+            Select (year > year2){Cartesian(Students,Rename(sid2,year2){Students}}
         }
         
     e.
@@ -157,6 +153,13 @@ C.
             )
          }
          
+         
+         Project(sid){
+            Students Difference Project(sid){
+                Natural_join(Onestop, Select(department != "Computer Science" && department !="Electrical Engineering")
+            {Courses})}
+         }
+         
     2.
         Consider the following schema:
         - SuppInfo (suppid: Integer, prodid: Integer)
@@ -166,7 +169,11 @@ C.
         Project(suppid,suppid2){
             Intersection(
                 Project(suppid,prodid){SuppInfo},
-                Project(suppid2,prodid2){SuppInfo2}
+                Project(suppid2,prodid2){
+                    Rename(suppid2,prodid2){
+                        SuppInfo
+                    }
+                }
             )
         }
         

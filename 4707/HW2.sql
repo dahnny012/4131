@@ -1,3 +1,7 @@
+Danh Nguyen
+HW2 4707
+4460226
+
 1.
 A.
     CREATE TABLE customer (cid number(9),
@@ -54,11 +58,12 @@ D.
     );
     
 2.
-    CREATE TABLE books(ISBN number(13), name varchar(255),authName varchar(255),pubName varchar(255)
-    PRIMARY KEY(ISBN,authName)
-    FOREIGN KEY(author_name) references authors(authName)
+    CREATE TABLE books(ISBN number(13), 
+    name varchar(255) name NOT NULL,
+    authName varchar(255),
+    pubName varchar(255) PRIMARY KEY(ISBN,authName),
+    FOREIGN KEY(author_name) references authors(authName),
     FOREIGN KEY(pubName) references publishers(pubName)
-    name NOT NULL,
     );
     
     CREATE TABLE publishers(pubName varchar(255),
@@ -119,15 +124,17 @@ C.
         
     a.
         Project(snames){
-        Natural_join(Onestop Divided by Project(cids){Select(cname = "RDBMS" or "NoSQL"){Courses}},
-                     Students)
+        Natural_join(Onestop Divided by Project(cids){
+            Select(cname = "RDBMS" or "NoSQL"){Courses}},Students)
         }
         
         
         
     b.
         Project(snames){
-            Natural_join(Students, Onestop Divided By Project(cids){Select(department = "Computer Science"){Courses}})
+            Natural_join(Students, 
+            Onestop / 
+            Project(cids){Select(department = "Computer Science"){Courses}})
         }
         
     c.
@@ -143,27 +150,19 @@ C.
         
     e.
         Project(sid){
-            natural_join(Students,
-                Select(department = "Computer Science"){
-                    natural_join(Onestop,Courses)
-                },
-                Select(department ="Electrical Engineering"){
-                    natural_join(Onestop,Courses)
-                }
-            )
-         }
-         
-         
-         Project(sid){
-            Students Difference Project(sid){
-                Natural_join(Onestop, Select(department != "Computer Science" && department !="Electrical Engineering")
-            {Courses})}
+            Students - Project(sid){
+                Natural_join(Onestop, 
+                    Select(department != "Computer Science" 
+                        && department !="Electrical Engineering"){Courses}
+                )
+            }
          }
          
     2.
         Consider the following schema:
         - SuppInfo (suppid: Integer, prodid: Integer)
-        - Purchases (purchaseid: Integer, custid: Integer, prodid: Integer,purchaseMethod: Integer)
+        - Purchases (purchaseid: Integer, custid: Integer, prodid: 
+        Integer,purchaseMethod: Integer)
         
         a.
         Project(suppid,suppid2){

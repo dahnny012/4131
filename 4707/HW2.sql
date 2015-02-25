@@ -167,14 +167,9 @@ C.
         
         a.
         Project(suppid,suppid2){
-            Intersection(
+            Select(suppid != suppid2 & prodid = prodid2)
                 Project(suppid,prodid){SuppInfo},
-                Project(suppid2,prodid2){
-                    Rename(suppid2,prodid2){
-                        SuppInfo
-                    }
-                }
-            )
+                Project(suppid2,prodid2){Rename(suppid2,prodid2){SuppInfo}}
         }
         
         

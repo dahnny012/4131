@@ -174,16 +174,27 @@ C.
         
         
         b.
-        Project(custids){
-			Select(suppid=suppid2 & prodid != proid2){
+        Least2 = 
+			Select(purchaseMethod != purchaseMethod2){
 			Union(
-                Project(suppid,prodid,purchaseMethod){Purchases},
-                Project(suppid2,prodid2,purchaseMethod){
-					Rename(Purchases2){
-						Purchases
-                }}
-            )
-        }
+                Purchases,
+				Rename(custid,purchaseid2,purchaseMethod2){Purchases})
+            }
+        
+        
+        Least3 = 
+            Select(purchaseMethod != purchaseMethod2
+                    purchaseMethod3 != purchaseMethod
+                    purchaseMethod2 != purchaseMethod3){
+                
+                Union(Purchases,
+		    	Rename(custid,purchaseid2,purchaseMethod2){Purchases},
+		    	Rename(custid,purchaseid3,purchaseMethod3){Purchases})
+            }
+            
+            project(custid){
+                Least3 - Least2 
+            }
         
         
     3.
@@ -200,8 +211,7 @@ C.
 			Natural_join(
 				Natural_Join(
 					Natural_Join(Drinkers,Frequents),Serves
-				),
-			Likes)
+			),Likes)
 		}
 		
 		

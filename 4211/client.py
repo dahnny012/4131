@@ -3,7 +3,7 @@ import io,os,sys
 import threading
 
 HOST = "127.0.0.1"
-PORT = "9000"
+PORT = 1337
 EVENT  = 0
 CONTENTS = 1
 
@@ -23,7 +23,7 @@ factory = Token()
 
 class FtpClient:
     def __init__(self):
-        self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.socket = None
         self.token = ""
         return
     def run(self):
@@ -61,9 +61,15 @@ class FtpClient:
             self.socket.close()
             
     def connect(self):
-        self.socket.connect((HOST, PORT))
+        self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        try:
+            self.socket.connect((HOST, PORT))
+        except:
+            print("Error connecting")
+             
+          
     def send(self,msg):
-        self.socket.sendall(msg)
+        self.socket.send(bytes(msg, 'UTF-8'))
     def recieve(self,size):
         return self.socket.recv(size)
     

@@ -2,7 +2,7 @@ import socket
 import io,os,sys
 import threading
 
-PORT = 9000
+PORT = 1337
 
 class Tokens:
     def __init__(self):
@@ -24,16 +24,22 @@ class FtpServer:
         with open("records.txt","r") as file:
             self.records = file.readlines()
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind(("127.0.0.1",PORT))
         self.socket.listen(10)
         self.tokens = Tokens()
     def run(self):
         while True:
-        	(client_socket,address) = self.socket.accept()
-        	t = threading.Thread(target=self.process(), args=(client_socket,))
+        	client_socket,address = self.socket.accept()
+        	t = threading.Thread(target=self.process, args=(client_socket,))
         	t.run();
         	
     def process(self,client):
         header = client.recv(1024)
         print(header)
+        client.send(bytes("1",'utf-8'))
+        client.close()
         return
+
+server = FtpServer()
+server.run()

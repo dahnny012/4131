@@ -174,10 +174,10 @@ C.
         
         b.
         Least2 = 
-			Select(purchaseMethod != purchaseMethod2){
+            Select(purchaseMethod != purchaseMethod2){
 			Union(
                 Purchases,
-				Rename(custid,purchaseid2,purchaseMethod2){Purchases})
+			    Rename(custid,purchaseid2,purchaseMethod2){Purchases})
             }
         
         

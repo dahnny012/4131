@@ -12,7 +12,8 @@
         </div>
         <table border="1">
           <tr>
-            <th>Name</th>
+            <th>Restaurant</th>
+            <th>Picture</th>
             <th>Description</th>	
             <th>Address</th>
             <th>Contact Number</th>
@@ -22,6 +23,10 @@
           </tr>
           <tr>
             <td class="name"><a href="http://www.yelp.com/biz/keefer-court-bakery-and-caf%C3%A9-minneapolis-2">Keefer Court</a></td>
+            <td id="keefer" onclick="showPicture('keefer')">
+              <button>Picture</button>
+              <img src ="" class="picture">
+            </td>
             <td>A Chinese bakery and restarant.</td>		
             <td>326 Cedar Ave S
             Minneapolis, MN 55454</td>
@@ -32,6 +37,10 @@
           <tr>
             <td class="name"><a href="http://www.yelp.com/biz/chipotle-mexican-grill-minneapolis">
               Chipotle Mexican Grill</a></td>
+            <td id="chipotle">
+              <button onclick="showPicture('chipotle')">Picture</button>
+              <img src ="" class="picture">
+            </td>
             <td>You have to be living under a rock to not know.</td>		
             <td>800 Washington Ave SE
             Minneapolis, MN 55414</td>
@@ -41,6 +50,10 @@
           </tr>
             <tr>
             <td class="name"><a href="http://www.yelp.com/biz/kowloon-restaurant-minneapolis">Kowloon</a></td>
+            <td id="kowloon">
+              <button onclick="showPicture('kowloon')">Picture</button>
+              <img src ="" class="picture">
+            </td>
             <td>Among one of the better Chinese restaurants around campus.</td>		
             <td>935 Washington Ave SE
 Minneapolis, MN 55414</td>
@@ -50,6 +63,10 @@ Minneapolis, MN 55414</td>
           </tr>
             <tr>
             <td class="name"><a href="http://www.yelp.com/biz/five-guys-burgers-and-fries-minneapolis">Five Guys Burgers and Fries</a></td>
+            <td id="fiveGuys">
+              <button onclick="showPicture('fiveGuys')">Picture</button>
+              <img src ="" class="picture">
+            </td>
             <td>Award winning burger joint</td>		
             <td>1413 4th St SE
             Minneapolis, MN 55414</td>
@@ -59,6 +76,10 @@ Minneapolis, MN 55414</td>
           </tr>
             <tr>
             <td class="name"><a href="http://www.yelp.com/biz/korea-restaurant-minneapolis">Korea Restaurant</a></td>
+            <td id="korea">
+              <button onclick="showPicture('korea')">Picture</button>
+              <img src ="" class="picture">
+            </td>
             <td>A korean restaurant</td>		
             <td>221 Oak St SE
             Minneapolis, MN 55414</td>
@@ -71,3 +92,41 @@ Minneapolis, MN 55414</td>
         <p>Used chrome</p>
     </body>
 </html>
+
+
+<script>
+var current;
+var PICTURE = 3;
+var bodyFlag = true;
+
+document.getElementsByTagName("body")[0]
+  .addEventListener("click",function(){
+    console.log("body");
+  if(bodyFlag){
+    removeCurrent();
+  }
+  bodyFlag = true;
+});
+
+
+function $(id){
+  return document.getElementById(id);
+}
+
+function removeCurrent(){
+  if(current !== undefined){
+    current.childNodes[PICTURE].src = "";
+  }
+  current = undefined;
+}
+
+function showPicture(name){
+  bodyFlag = false;
+  var path = "images/"+name+".jpg";
+  console.log("button");
+  $(name).childNodes[PICTURE].src = path;
+  current = $(name);
+}
+
+
+</script>

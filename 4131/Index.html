@@ -96,6 +96,7 @@ Minneapolis, MN 55414</td>
 
 <script>
 var current;
+var currentName;
 var PICTURE = 3;
 var bodyFlag = true;
 
@@ -121,11 +122,17 @@ function removeCurrent(){
 }
 
 function showPicture(name){
-  bodyFlag = false;
-  var path = "images/"+name+".jpg";
-  console.log("button");
-  $(name).childNodes[PICTURE].src = path;
-  current = $(name);
+  if(name != currentName){
+    bodyFlag = false;
+    var path = "images/"+name+".jpg";
+    console.log("button");
+    $(name).childNodes[PICTURE].src = path;
+    current = $(name);
+    currentName = name;
+  }
+  else{
+    removeCurrent();  
+  }
 }
 
 

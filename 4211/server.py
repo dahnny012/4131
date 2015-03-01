@@ -7,6 +7,8 @@ PORT = 1337
 USER = 1
 PASSWORD = 2
 COMMAND = 0
+TOKEN = 1
+HEADER =  0
 
 class Tokens:
     def __init__(self):
@@ -17,8 +19,11 @@ class Tokens:
         self.tokens[token] = token
         return str(token)
     def checkToken(self,token):
-        if token in self.tokens:
-            return True
+        try:
+            if int(token) in self.tokens:
+                return True
+        except:
+            print("not a number")
         return False
     def killToken(self,token):
         self.tokens[token] = None
@@ -31,15 +36,14 @@ class FtpServer:
             for line in file:
                 line = line.split(" ")
                 self.users[line[0]]=line[1].split("\n")[0]
-                
-        self.token = Tokens()
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind(("127.0.0.1",PORT))
         self.socket.listen(10)
         self.tokens = Tokens()
         self.handles = {}
-        self.handles["LOGIN"] = self.login
+        self.handles["login"] = self.login
+        self.handles["ls"] = self.ls
         
     def run(self):
         while True:
@@ -48,13 +52,14 @@ class FtpServer:
         	t.run();
         	
     def route(self,client):
-        header = client.recv(1024)
-        header = header.decode('utf-8').split(" ")
-        self.handles[header[COMMAND]](client,header)
+        header = client.recv(1024).decode('utf-8')
+        args = header.split("\n")[0].split(" ")
+        self.handles[args[COMMAND]](client,header)
         return
     
     def login(self,client,header):
         token = None
+        header = header.split(" ")
         token = self.checkUserPass(header[USER],header[PASSWORD])
         #print("No login credentials")
         if token == None:
@@ -66,6 +71,16 @@ class FtpServer:
         client.send(bytes("ACCEPTED " + str(token),'utf-8'))
         client.close()
         return
+    def ls(self,client,header):
+        if self.authToken(header):
+            print("command accepted")
+            files="file1.txt\nfile2.txt"
+            client.send(bytes(files,'utf-8'))
+        else:
+            print("token rejected")
+            client.send(bytes("No AuthToken",'utf-8'))
+        client.close()
+        
     
     def checkUserPass(self,user,password):
         print(user)
@@ -79,6 +94,10 @@ class FtpServer:
             print("user not in records")
         return None
         
+    def authToken(self,request):
+        args = request.split("\n")
+        token = args[TOKEN]
+        return self.tokens.checkToken(token)
 
 server = FtpServer()
 server.run()

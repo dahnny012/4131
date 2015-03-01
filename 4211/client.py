@@ -29,15 +29,16 @@ class FtpClient:
         self.handlers["download"] = self.download
         self.handlers["upload"] = self.upload
         self.handlers["quit"] = self.disconnect
+        self.request = ""
         return
     def run(self):
         self.login()
         self.process()
         return
-    def package(self,request):
-        request = request.split(" ")
+    def package(self):
         try:
-            return self.handlers[request[COMMAND]](request)
+            header = self.request.split(" ")
+            return self.handlers[header[COMMAND]]()
         except:
             print("Command does not exist")
             return False
@@ -46,13 +47,14 @@ class FtpClient:
         while not self.quit:
             #   Attempt to get a valid request
             while not validCommand:
-                request = input("Command: " )
-                validCommand = self.package(request)
+                self.request = input("Command: " )
+                validCommand = self.package()
             self.connect()
-            self.send(request)
+            self.send(self.request)
             content = self.recieveAll()
+            print(content)
+            validCommand = False
             self.close()
-            return
     def login(self):
         connected = False
         while not connected:
@@ -62,7 +64,7 @@ class FtpClient:
             password = input('Enter your pass: ')
             
             #Should encrypt but... w/e
-            self.send("LOGIN "+user + " " + password)
+            self.send("login "+user + " " + password)
             
             #Recieve from server
             data = self.recieve(1024).decode("UTF-8")
@@ -82,24 +84,24 @@ class FtpClient:
             print("Error connecting")
              
           
-    def sign(self,request):
-        request += " " + self.token
-    def default(self,request):
-        self.sign(request)
+    def sign(self):
+        self.request = self.request +  "\n" + str(self.token)
+    def default(self):
+        self.sign()
         return True
-    def upload(self,request):
-        self.sign(request)
+    def upload(self):
+        self.sign()
         return True
-    def download(self,request):
-        self.sign(request)
+    def download(self):
+        self.sign()
         return True
-    def disconnect(self,request):
+    def disconnect(self):
         self.quit = True
-        self.sign(request)
+        self.sign()
         return True
     def close(self):
         self.socket.close()
-        self.token = ""
+        self.request = ""
     def send(self,msg):
         self.socket.send(bytes(msg, 'UTF-8'))
     def recieve(self,size):
@@ -110,7 +112,7 @@ class FtpClient:
             buf = self.socket.recv(1024)
             if not buf:
                 break
-            data += buf
+            data += buf.decode('utf-8')
         return data
     
 client = FtpClient()

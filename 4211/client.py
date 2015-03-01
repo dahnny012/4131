@@ -6,7 +6,7 @@ HOST = "127.0.0.1"
 PORT = 1337
 EVENT  = 0
 CONTENTS = 1
-
+COMMAND = 0
 
 class Token:
     def createToken(self,data):
@@ -23,21 +23,35 @@ class FtpClient:
     def __init__(self):
         self.socket = None
         self.token = ""
+        self.quit = False
+        self.handlers = {}
+        self.handlers["ls"] = self.default
+        self.handlers["download"] = self.download
+        self.handlers["upload"] = self.upload
+        self.handlers["quit"] = self.disconnect
         return
     def run(self):
         self.login()
         self.process()
         return
+    def package(self,request):
+        request = request.split(" ")
+        try:
+            return self.handlers[request[COMMAND]](request)
+        except:
+            print("Command does not exist")
+            return False
     def process(self):
-        while True:
-            #   Recieve a request
-            request = input("Command: " )
-            self.sign(request)
+        validCommand = False
+        while not self.quit:
+            #   Attempt to get a valid request
+            while not validCommand:
+                request = input("Command: " )
+                validCommand = self.package(request)
             self.connect()
             self.send(request)
-            self.
-            #Process response
-            
+            content = self.recieveAll()
+            self.close()
             return
     def login(self):
         connected = False
@@ -70,6 +84,22 @@ class FtpClient:
           
     def sign(self,request):
         request += " " + self.token
+    def default(self,request):
+        self.sign(request)
+        return True
+    def upload(self,request):
+        self.sign(request)
+        return True
+    def download(self,request):
+        self.sign(request)
+        return True
+    def disconnect(self,request):
+        self.quit = True
+        self.sign(request)
+        return True
+    def close(self):
+        self.socket.close()
+        self.token = ""
     def send(self,msg):
         self.socket.send(bytes(msg, 'UTF-8'))
     def recieve(self,size):

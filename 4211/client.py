@@ -10,14 +10,12 @@ CONTENTS = 1
 
 class Token:
     def createToken(self,data):
-        try:
             msg = data.split(" ")
             if msg[EVENT] == "ACCEPTED":
                 return int(msg[CONTENTS])
             else:
+                print("Did not get a token")
                 return -1
-        except:
-            return -1
             
 factory = Token()
 
@@ -34,8 +32,10 @@ class FtpClient:
         while True:
             #   Recieve a request
             request = input("Command: " )
+            self.sign(request)
             self.connect()
             self.send(request)
+            self.
             #Process response
             
             return
@@ -48,10 +48,10 @@ class FtpClient:
             password = input('Enter your pass: ')
             
             #Should encrypt but... w/e
-            self.send(user + " " + password)
+            self.send("LOGIN "+user + " " + password)
             
             #Recieve from server
-            data = self.recieve(1024)
+            data = self.recieve(1024).decode("UTF-8")
             
             # See if you got a token
             token = factory.createToken(data)
@@ -68,10 +68,20 @@ class FtpClient:
             print("Error connecting")
              
           
+    def sign(self,request):
+        request += " " + self.token
     def send(self,msg):
         self.socket.send(bytes(msg, 'UTF-8'))
     def recieve(self,size):
         return self.socket.recv(size)
+    def recieveAll(self):
+        data = ""
+        while(True):
+            buf = self.socket.recv(1024)
+            if not buf:
+                break
+            data += buf
+        return data
     
 client = FtpClient()
 client.run()

@@ -8,7 +8,7 @@
 create table SuppInfo (
 	suppid integer,
 	prodid integer,
-	primary key(sid, prodid));
+	primary key(suppid, prodid));
 
 insert into SuppInfo values (1, 1);
 insert into SuppInfo values (1, 2);

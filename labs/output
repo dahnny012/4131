@@ -1,0 +1,99 @@
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+INSERT INTO student VALUES (112348546, 'Juan Rodriguez','Psychology','JR', 20)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (S15C4707G67.SYS_C00200140) violated
+
+
+INSERT INTO class VALUES ('Algorithms', 'MWF 12:30-­1:45', '1320 DCL')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (S15C4707G67.SYS_C00200142) violated
+
+
+INSERT INTO enrolled VALUES (561254634, 'Data Structures')
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (S15C4707G67.SYS_C00200144) violated - parent
+key not found
+
+
+INSERT INTO enrolled VALUES (051135593, 'Communication Networks')
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (S15C4707G67.SYS_C00200145) violated - parent
+key not found
+
+
+
+Table dropped.
+
+
+Table dropped.
+
+
+Table dropped.

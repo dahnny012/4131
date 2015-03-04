@@ -23,8 +23,14 @@ a{
 }
 
 
-.picture{
+.pictureWrapper{
     position:absolute;
-    max-height:300px;
-    max-width:300px;
+    max-height:500px;
+    max-width:500px;
+}
+
+
+.picture{
+    height:300px;
+    width:300px;
 }

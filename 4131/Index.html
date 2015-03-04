@@ -21,8 +21,8 @@
           </tr>
           <tr>
             <td class="name"><a href="http://www.yelp.com/biz/keefer-court-bakery-and-caf%C3%A9-minneapolis-2">Keefer Court</a></td>
-            <td id="keefer" onclick="showPicture('keefer')">
-              <button>Picture</button>
+            <td id="keefer">
+              <button onclick="showPicture('keefer')">Picture</button>
             </td>
             <td>A Chinese bakery and restarant.</td>		
             <td>326 Cedar Ave S
@@ -90,37 +90,44 @@ Minneapolis, MN 55414</td>
 <script>
 var current= {
   parent:undefined,
-  node:undefined,
-}
+node:undefined};
 var PICTURE = 3;
 var bodyFlag = true;
+var showing;
 
-document.getElementsByTagName("body")[0]
-  .addEventListener("click",function(){
-    console.log("body");
-  if(bodyFlag){
-    removeCurrent();
-  }
-  bodyFlag = true;
-});
+function removeEvent(node){
+  node.removeEventListener()
+}
+
+function addEvent(){
+  document.getElementsByTagName("div")[0]
+    .addEventListener("click",function(){
+      console.log("div");
+      removeCurrent();
+  });
+}
 
 function $(id){
   return document.getElementById(id);
 }
 
 function removeCurrent(){
-  if(current !== undefined){
+  if(current.node !== undefined){
+    removeEvent($(current.parent));
     $(current.parent).removeChild(current.node);
   }
-  current = undefined;
+  current= {
+  parent:undefined,
+node:undefined};
 }
 
 
 function createImgNode(src,alt){
   var div = document.createElement("div");
-  div.className = "picture";
+  div.className = "pictureWrapper";
   var img = new Image();
   img.src = src;
+  img.className = "picture";
   if(alt != undefined)
     img.title = alt;
   div.appendChild(img);
@@ -129,7 +136,8 @@ function createImgNode(src,alt){
 }
 
 function showPicture(name){
-  if(current == undefined || name != current.parent){
+  removeCurrent();
+  if(name != current.parent){
     bodyFlag = false;
     var path = "images/"+name+".jpg";
     console.log("button");
@@ -139,9 +147,7 @@ function showPicture(name){
       parent:name,
       node: divNode
     }
-  }
-  else{
-    removeCurrent();  
+    addEvent();
   }
 }
 

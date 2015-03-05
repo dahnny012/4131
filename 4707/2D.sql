@@ -1,21 +1,12 @@
-/*Select Distinct S1.suppid,S2.suppid from SuppInfo S1,SuppInfo S2*/
-/*Where S1.suppid != S2.suppid and S1.suppid < S2.suppid  and S1.prodid = S2.prodid;*/
+/* 1A */
 
-
-/*Select S1.suppid,S2.suppid from SuppInfo S1,SuppInfo S2 Intersect */
-
-
-
-/*Temp1
-Select S1.suppid,S2.prodid From 
-
-/*All Pairs*/
-/*(Select S1.proid , S2.proid From Join SuppInfo S2 on S1.prodid = S2.prodid And S1.suppid < S2.suppid)*/
-
-/* All difs */
-/*Join SuppInfo dif on dif.prodid != S1.prodid And dif.suppid = S2.suppid;*/
-
-
+Select S1.suppid,S2.suppid
+From SuppInfo S1,SuppInfo S2
+Where S1.prodid = S2.prodid and S1.suppid < S2.suppid
+Minus (Select S3.suppid,S4.suppid
+  From SuppInfo S3,SuppInfo S4
+  Where S3.prodid != S4.prodid
+);
 
 /* 1B */
 Select Distinct custid
@@ -31,35 +22,36 @@ Where custid Not In
 	and P2.purchaseMethod != P3.purchaseMethod);
 	 
 	
-
+	
+/*2D*/
+Select Distinct S1.barId,S2.barId
+From Serves S1,Serves S2
+Where S1.beerId = S2.beerId and S1.barId < S2.barId
+and (S1.barId,S2.barId) not in (Select S3.barId,S4.barId
+  From Serves S3,Serves S4
+  Where S3.beerId != S4.beerId);
 
 /* 3D */
-/*Look at Customer that has only bought from that All and not from Not All*/
+Select C1.cname From
+/* Get Cids where they dont exist there */
+	(Select B1.cid
+	From Buys B1
+	Where Not Exists
+/*Get customers who did not buy products bought by all customers */
+	(Select B2.cid ,Count(distinct B2.cid) as cCount
+	From Buys B2
+	Group by B2.cid
+	Having Count(distinct B2.cid) < (Select Count(cid) From Customer))) allbuys,Customer C1
+	Where allBuys.cid = C1.cid; 
 
-Select C1.name where 
-(Select cid From 
-/* Table of Products bought by all customers */
-(Select pid 
-From Buys B1
-Group by B1.pid
-Having Count(distinct cid) = (Select Count(cid) From Customer))
-Where Not Exists 
-/*Get Table of products not bought by all customers */
-	(Select pid From Buys B1
-	Group by B1.pid 
-	Having Count(distinct cid) < (Select Count(cid) From Customer))) as allbuys,Customer C1
-Where allbuys.cid = C1.cid
-
-
-
-		
 
 /* 4D */
 
 Select A.name
 From Actors A,Movies M,Cast C
-Where M.did = (Select did from Directors where name = "Spielberg")
-And C.mid = M.mid
-Except
-	(Where M.did != (Select did from Directors where name = "Spielberg")
-	And C.mid = M.mid)
+Where M.did in (Select did from Directors where name = 'Spielberg')
+And C.mid = M.mid and A.aid = C.aid
+Minus
+	(Select A.Name From Actors A,Movies M,Cast C 
+	Where M.did Not in (Select did from Directors where name = 'Spielberg')
+	And C.mid = M.mid and A.aid = C.aid);

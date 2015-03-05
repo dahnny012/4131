@@ -1,0 +1,92 @@
+PNAME
+--------------------------------
+Brian, C.
+Bucket, T.
+Edison, L.
+Jones, J.
+Smith, S.
+Walter, A.
+
+6 rows selected.
+
+
+SNAME
+--------------------------------
+Jetplane, Leaving O.
+
+
+       CNO     SECTNO AVG(S1.GPA)
+---------- ---------- -----------
+       467	    1	     2.98
+       726	    1  2.64117647
+       302	    2	    3.075
+       701	    1  3.28333333
+       302	    1		3
+
+
+no rows selected
+
+
+SNAME					SID    CLASSES
+-------------------------------- ---------- ----------
+Hamilton, S.				 29	     3
+
+
+DNAME
+--------------------------------
+Industrial Engineering
+Mathematics
+
+
+DNAME				 SNAME
+-------------------------------- --------------------------------
+Mathematics			 Sulfate, Barry M.
+Mathematics			 Cheong, R.
+Mathematics			 Thorton, James Q.
+Mathematics			 Gooch
+Mathematics			 Smith, L.
+Mathematics			 Ford, Gerald
+Mathematics			 Austin, G.
+Mathematics			 Mathews, John W.
+Mathematics			 Dunbar, D.
+Mathematics			 Rosemeyer, S.
+Mathematics			 Atny, Mary H.
+
+DNAME				 SNAME
+-------------------------------- --------------------------------
+Mathematics			 Glitch, R.
+Mathematics			 Ziebart, F.
+Mathematics			 Zappa, F.
+Mathematics			 Ghandi, I.
+Mathematics			 Uoiea, Z.
+Mathematics			 Davis, Scott P.
+Mathematics			 Bates, Michael L.
+
+18 rows selected.
+
+
+DNAME				    NUMPHDS
+-------------------------------- ----------
+Industrial Engineering			 41
+
+
+SNAME
+--------------------------------
+Zappa, F.
+
+
+MAX(S.AGE)-MIN(S.AGE)
+---------------------
+		   38
+
+
+DNAME				 AVG(S.GPA)
+-------------------------------- ----------
+Civil Engineering		 2.91428571
+Computer Sciences		 3.00416667
+Industrial Engineering		       2.77
+
+
+SNAME					SID	   GPA
+-------------------------------- ---------- ----------
+Hamilton, S.				 29	   2.8

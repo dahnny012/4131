@@ -6,10 +6,8 @@
         <meta charset="utf-8">
     </head>
     <body>
-        <div id="headers">
         <h1>5 Restaurants I like</h1>
           <a href="Form.html">Add a Suggestion</a>
-        </div>
         <table border="1">
           <tr>
             <th>Restaurant</th>
@@ -23,9 +21,8 @@
           </tr>
           <tr>
             <td class="name"><a href="http://www.yelp.com/biz/keefer-court-bakery-and-caf%C3%A9-minneapolis-2">Keefer Court</a></td>
-            <td id="keefer" onclick="showPicture('keefer')">
-              <button>Picture</button>
-              <img src ="" class="picture">
+            <td id="keefer">
+              <button onclick="showPicture('keefer')">Picture</button>
             </td>
             <td>A Chinese bakery and restarant.</td>		
             <td>326 Cedar Ave S
@@ -39,7 +36,6 @@
               Chipotle Mexican Grill</a></td>
             <td id="chipotle">
               <button onclick="showPicture('chipotle')">Picture</button>
-              <img src ="" class="picture">
             </td>
             <td>You have to be living under a rock to not know.</td>		
             <td>800 Washington Ave SE
@@ -52,7 +48,6 @@
             <td class="name"><a href="http://www.yelp.com/biz/kowloon-restaurant-minneapolis">Kowloon</a></td>
             <td id="kowloon">
               <button onclick="showPicture('kowloon')">Picture</button>
-              <img src ="" class="picture">
             </td>
             <td>Among one of the better Chinese restaurants around campus.</td>		
             <td>935 Washington Ave SE
@@ -65,7 +60,6 @@ Minneapolis, MN 55414</td>
             <td class="name"><a href="http://www.yelp.com/biz/five-guys-burgers-and-fries-minneapolis">Five Guys Burgers and Fries</a></td>
             <td id="fiveGuys">
               <button onclick="showPicture('fiveGuys')">Picture</button>
-              <img src ="" class="picture">
             </td>
             <td>Award winning burger joint</td>		
             <td>1413 4th St SE
@@ -78,7 +72,6 @@ Minneapolis, MN 55414</td>
             <td class="name"><a href="http://www.yelp.com/biz/korea-restaurant-minneapolis">Korea Restaurant</a></td>
             <td id="korea">
               <button onclick="showPicture('korea')">Picture</button>
-              <img src ="" class="picture">
             </td>
             <td>A korean restaurant</td>		
             <td>221 Oak St SE
@@ -95,19 +88,25 @@ Minneapolis, MN 55414</td>
 
 
 <script>
-var current;
-var currentName;
+var current= {
+  parent:undefined,
+node:undefined};
 var PICTURE = 3;
-var bodyFlag = true;
+var bodyFlag = false;
+
+
+// No longer using
+function removeEvent(node){
+  node.removeEventListener()
+}
 
 document.getElementsByTagName("body")[0]
-  .addEventListener("click",function(){
-    console.log("body");
-  if(bodyFlag){
-    removeCurrent();
-  }
-  bodyFlag = true;
-});
+    .addEventListener("click",function(){
+      if(bodyFlag)
+        removeCurrent();
+      bodyFlag = true;
+      
+  });
 
 
 function $(id){
@@ -115,24 +114,47 @@ function $(id){
 }
 
 function removeCurrent(){
-  if(current !== undefined){
-    current.childNodes[PICTURE].src = "";
+  if(current.node !== undefined){
+    //removeEvent($(current.parent));
+    $(current.parent).removeChild(current.node);
   }
-  current = undefined;
+  current= {
+  parent:undefined,
+node:undefined};
+}
+
+// create the node we want
+function createImgNode(src,alt){
+  var div = document.createElement("div");
+  div.className = "pictureWrapper";
+  var img = new Image();
+  img.src = src;
+  img.className = "picture";
+  if(alt != undefined)
+    img.title = alt;
+  div.appendChild(img);
+  return div;
 }
 
 function showPicture(name){
-  if(name != currentName){
+  // deletes current
+  // makes new pic
+  if(name != current.parent){
+    removeCurrent();
     bodyFlag = false;
     var path = "images/"+name+".jpg";
     console.log("button");
-    $(name).childNodes[PICTURE].src = path;
-    current = $(name);
-    currentName = name;
+    var divNode = createImgNode(path,name);
+    $(name).appendChild(divNode);
+    current = {
+      parent:name,
+      node: divNode
+    }
+    // same button
+  }else{
+      removeCurrent();
   }
-  else{
-    removeCurrent();  
-  }
+
 }
 
 

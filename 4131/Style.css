@@ -25,12 +25,17 @@ a{
 
 .pictureWrapper{
     position:absolute;
-    max-height:500px;
-    max-width:500px;
+    height:500px;
+    width:500px;
+    background:#FDD017;
+    border:1px solid black;
 }
 
 
 .picture{
     height:300px;
     width:300px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }

@@ -7,53 +7,67 @@ var map = new Map();
 function Map(){
   var _map = this;
   var client = new XMLHttpRequest();
-  google.maps.event.addDomListener(window, 'load',run);
-  function createMapNode(name,coordinates){
-    console.log("creating map node");
+  this.current = {name:"",node:undefined};
+  // Load the json coordinates when window loads
+  google.maps.event.addDomListener(window, 'load',loadJson);
+  
+  // Creates the google maps nodes
+  this.createMapNode = function(name,coordinates){
+
+    if(coordinates["mapNode"] != undefined){
+      var mapNode = coordinates["mapNode"];
+    }
+    else{
+    // Creating the options obj , center it on the location
+    var latLng = new google.maps.LatLng(parseFloat(coordinates["lat"]),parseFloat(coordinates["long"]));
      var mapOptions = {
-          center: { lat: parseFloat(coordinates["lat"]), lng: parseFloat(coordinates["long"])},
-          zoom: 8
+          center:latLng,
+          zoom: 15
         };
-        console.log(mapOptions);
+        
+        // Create the container
         var mapNode=  document.createElement("div");
-        mapNode.class =  "map";
         mapNode.id = "map_"+name;
+        mapNode.className = "map";
+        coordinates["mapNode"] = mapNode;
+        
         var map = new google.maps.Map(mapNode,
             mapOptions);
-        coordinates["map"] = mapNode;
-        console.log(coordinates);
-        $("body")[0].appendChild(coordinates["map"]);
+        coordinates["map"] = map;
+        var marker = new google.maps.Marker({
+            position: latLng,
+            map: map,
+            title: name
+        });
+    }
+        $("#location_"+name).appendChild(mapNode);
   }
-
-  function run(fn) {
-     loadJson(
-     loadNodes);
-  };
   
+  // No Longer using
   function loadNodes(points) {
-    console.log("load node");
     for(var shop in points) {
-      //console.log(points[shop]);
-      createMapNode(shop,points[shop]);
+      _map.createMapNode(shop,points[shop]);
     }
     _map.points = points;
   }
-  function loadJson(complete){
-    console.log("load json");
+  
+  // AJAX Request to get lat,lng for each restarant, and place them in  hashmap
+  function loadJson(){
     client.open('GET', 'locations.txt');
     client.addEventListener("load", function(){
       _map.points = JSON.parse(client.responseText);
-      complete(_map.points);
     }, false);
     client.send();
   };
+  
+  // Psuedo jquery
   function $(id){
     switch(id[0]){
       case "#":
         var tag = id.substr(1);
         return document.getElementById(tag);
       case ".":
-      var tag = id.substr(1);
+        tag = id.substr(1);
         return document.getElementsByClassName(id);
       default:
         return document.getElementsByTagName(id);
@@ -61,8 +75,25 @@ function Map(){
   }
 }
 
-Map.prototype.showMap=function(name){
-  
+Map.prototype.loadMap = function(name){
+  if(this.current.name != name){
+    this.deleteCurrent();
+    this.createMapNode(name,map.points[name]);
+    this.current.name = name;
+    this.current.node = map.points[name]["mapNode"];
+    console.log(this.current);
+  }else{
+    console.log("trying to delete");
+    this.deleteCurrent();
+  }
+}
+
+Map.prototype.deleteCurrent = function(){
+  if(this.current.node !== undefined){
+    $("location_"+this.current.name).removeChild(this.current.node);
+      this.current.name = undefined;
+      this.current.node = undefined;
+  }
 }
 
 function showPicture(name){

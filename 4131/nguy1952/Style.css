@@ -1,16 +1,20 @@
-body{
+html,body{
     background:url("http://www.fabuloussavers.com/new_wallpaper/University_Of_Minnesota_Desktop_Wallpaper_freecomputerdesktopwallpaper_1600.jpg");
     color:yellow;
-    background-repeat: no-repeat;
+    background-repeat: repeat;
     background-position: right top;
     margin:0;
     padding:0;
+    height:100%;
 }
 
 a{
     color:yellow;
 }
 
+button{
+    display:block;
+}
 
 .userInput{
     display:block;
@@ -38,4 +42,13 @@ a{
     display: block;
     margin-left: auto;
     margin-right: auto;
+}
+
+
+.map{
+    position:absolute;
+    margin:0;
+    padding:0;
+    height:300px;
+    width:300px;
 }

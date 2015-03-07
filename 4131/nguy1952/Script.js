@@ -3,38 +3,65 @@ var current= {
 node:undefined};
 var PICTURE = 3;
 var bodyFlag = false;
-
-function map(){
+var map = new Map();
+function Map(){
+  var _map = this;
   var client = new XMLHttpRequest();
-  function createMapNode(node,name,coordinates){
+  google.maps.event.addDomListener(window, 'load',run);
+  function createMapNode(name,coordinates){
+    console.log("creating map node");
      var mapOptions = {
-          center: { lat: coordinates.lat, lng: coordinates.lng},
+          center: { lat: parseFloat(coordinates["lat"]), lng: parseFloat(coordinates["long"])},
           zoom: 8
         };
-      
+        console.log(mapOptions);
         var mapNode=  document.createElement("div");
         mapNode.class =  "map";
         mapNode.id = "map_"+name;
         var map = new google.maps.Map(mapNode,
             mapOptions);
-        return mapNode;
+        coordinates["map"] = mapNode;
+        console.log(coordinates);
+        $("body")[0].appendChild(coordinates["map"]);
   }
 
-  this.mapNodes = (function() {
-    client.open('GET', 'location.txt');
-    client.onreadystatechange = function() {
-    var points = JSON.parse(client.responseText);
-    var nodes = {};
+  function run(fn) {
+     loadJson(
+     loadNodes);
+  };
+  
+  function loadNodes(points) {
+    console.log("load node");
     for(var shop in points) {
-      
-        // get response createNode
-          // Load into a buffer
-      console.log(points[shop]);
+      //console.log(points[shop]);
+      createMapNode(shop,points[shop]);
     }
-  };})();
+    _map.points = points;
+  }
+  function loadJson(complete){
+    console.log("load json");
+    client.open('GET', 'locations.txt');
+    client.addEventListener("load", function(){
+      _map.points = JSON.parse(client.responseText);
+      complete(_map.points);
+    }, false);
+    client.send();
+  };
+  function $(id){
+    switch(id[0]){
+      case "#":
+        var tag = id.substr(1);
+        return document.getElementById(tag);
+      case ".":
+      var tag = id.substr(1);
+        return document.getElementsByClassName(id);
+      default:
+        return document.getElementsByTagName(id);
+    }
+  }
 }
 
-map.prototype.showMap=function(name){
+Map.prototype.showMap=function(name){
   
 }
 
@@ -97,4 +124,9 @@ function removeCurrent(){
   current= {
   parent:undefined,
 node:undefined};
+}
+
+
+function str(data){
+  return data.toString();
 }

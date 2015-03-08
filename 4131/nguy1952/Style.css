@@ -45,7 +45,7 @@ button{
 }
 
 
-.map{
+.map,#map_keefer{
     position:absolute;
     margin:0;
     padding:0;

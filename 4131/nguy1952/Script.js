@@ -4,6 +4,7 @@ node:undefined};
 var PICTURE = 3;
 var bodyFlag = false;
 var map = new Map();
+var gMap;
 function Map(){
   var _map = this;
   var client = new XMLHttpRequest();
@@ -31,28 +32,35 @@ function Map(){
         mapNode.className = "map";
         coordinates["mapNode"] = mapNode;
         
-        var map = new google.maps.Map(mapNode,
+        // Create the map and set the marker on the restraunt pos.
+        var gMap = new google.maps.Map(mapNode,
             mapOptions);
-        coordinates["map"] = map;
+        coordinates["map"] = gMap;
         var marker = new google.maps.Marker({
             position: latLng,
-            map: map,
+            map: gMap,
             title: name
         });
+        gMap.setZoom( gMap.getZoom() );
     }
+        // Finally append on to the dom and make absolute
+        mapNode.style.position = "absolute";
         $("#location_"+name).appendChild(mapNode);
+        
+        // Center and resize
+        resize(coordinates["map"]);
   }
   
-  // No Longer using
-  function loadNodes(points) {
-    for(var shop in points) {
-      _map.createMapNode(shop,points[shop]);
-    }
-    _map.points = points;
-  }
   
-  // AJAX Request to get lat,lng for each restarant, and place them in  hashmap
+  function resize(gMap){
+    var center = gMap.getCenter();
+    google.maps.event.trigger(gMap, "resize");
+    gMap.setCenter(center);
+  };
+
+  // AJAX Request to get lat,lng for each restarant, and place them in hashmap
   function loadJson(){
+    console.log("json");
     client.open('GET', 'locations.txt');
     client.addEventListener("load", function(){
       _map.points = JSON.parse(client.responseText);

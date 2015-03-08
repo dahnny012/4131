@@ -5,6 +5,9 @@ var PICTURE = 3;
 var bodyFlag = false;
 var map = new Map();
 var gMap;
+var timer;
+
+
 function Map(){
   var _map = this;
   var client = new XMLHttpRequest();
@@ -49,6 +52,10 @@ function Map(){
         
         // Center and resize
         resize(coordinates["map"]);
+        
+        timer = setTimeout(function (argument) {
+          map.deleteCurrent();
+        },15000);
   }
   
   
@@ -84,6 +91,7 @@ function Map(){
 }
 
 Map.prototype.loadMap = function(name){
+  clearTimeout(timer);
   if(this.current.name != name){
     this.deleteCurrent();
     this.createMapNode(name,map.points[name]);

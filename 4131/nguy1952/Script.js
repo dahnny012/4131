@@ -44,7 +44,6 @@ function Map(){
             map: gMap,
             title: name
         });
-        gMap.setZoom( gMap.getZoom() );
     }
         // Finally append on to the dom and make absolute
         mapNode.style.position = "absolute";

@@ -135,7 +135,8 @@ class FtpClient:
         self.close()
     def fileError(self):
         buf = self.recieve(1024).decode("UTF-8")
-        return buf == "ERROR"
+        buf = buf.split(" ")
+        return buf[EVENT] == "ERROR"
         
     def close(self):
         self.socket.close()

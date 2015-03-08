@@ -35,10 +35,10 @@ class FtpClient:
         self.login()
         self.process()
         return
-    def package(self):
+    def handle(self):
         try:
             header = self.request.split(" ")
-            return self.handlers[header[COMMAND]]()
+            return self.handlers[header[COMMAND]](header)
         except:
             print("Command does not exist")
             return False
@@ -48,13 +48,7 @@ class FtpClient:
             #   Attempt to get a valid request
             while not validCommand:
                 self.request = input("Command: " )
-                validCommand = self.package()
-            self.connect()
-            self.send(self.request)
-            content = self.recieveAll()
-            print(content)
-            validCommand = False
-            self.close()
+                validCommand = self.handle()
     def login(self):
         connected = False
         while not connected:
@@ -85,25 +79,71 @@ class FtpClient:
              
           
     def sign(self):
-        self.request = self.request +  "\n" + str(self.token)
-    def default(self):
+        self.request = self.request +  "\n" + str(self.token) + "\n"
+        # Default just sends command and prints output
+    def default(self,header):
         self.sign()
+        self.connect()
+        self.send(self.request)
+        content = self.recieveAll()
+        print(content)
+        self.close()
         return True
-    def upload(self):
+    def upload(self,header):
         self.sign()
-        return True
-    def download(self):
+        self.connect()
+        try:
+            self.send(self.request)
+            with open(header[CONTENTS],"rb") as file:
+                read = file.read(1024)
+                while(read):
+                    self.sendB(read)
+                    read = file.read(1024)
+            content = self.recieveAll()
+            print(content)
+            self.close()
+            return True
+        except:
+            return False
+    def download(self,header):
         self.sign()
-        return True
-    def disconnect(self):
+        try:
+            self.send(self.request)
+            self.recFile(header[CONTENTS])
+            self.close()
+            return True
+        except:
+            return False
+    def disconnect(self,header):
         self.quit = True
         self.sign()
         return True
+    
+    def recFile(self,fn):
+        if(self.fileError):
+            print("Server had error")
+            return False
+        with open(fn,"wb") as file:
+            while(True):
+                buf = self.recieve(1024)
+                if not buf:
+                    break
+                file.write(buf)
+    def recResponse(self):
+        content = self.recieveAll()
+        print(content)
+        self.close()
+    def fileError(self):
+        buf = self.recieve(1024).decode("UTF-8")
+        return buf == "ERROR"
+        
     def close(self):
         self.socket.close()
         self.request = ""
     def send(self,msg):
         self.socket.send(bytes(msg, 'UTF-8'))
+    def sendB(self,msg):
+        self.socket.send(msg)
     def recieve(self,size):
         return self.socket.recv(size)
     def recieveAll(self):

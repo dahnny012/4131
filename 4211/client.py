@@ -43,8 +43,8 @@ class FtpClient:
             print("Command does not exist")
             return False
     def process(self):
-        validCommand = False
         while not self.quit:
+            validCommand = False
             #   Attempt to get a valid request
             while not validCommand:
                 self.request = input("Command: " )
@@ -108,11 +108,13 @@ class FtpClient:
     def download(self,header):
         self.sign()
         try:
+            self.connect()
             self.send(self.request)
             self.recFile(header[CONTENTS])
             self.close()
             return True
-        except:
+        except Exception:
+            print("error with download");
             return False
     def disconnect(self,header):
         self.quit = True
@@ -120,10 +122,10 @@ class FtpClient:
         return True
     
     def recFile(self,fn):
-        if(self.fileError):
-            print("Server had error")
+        if(self.fileError()):
+            print("Server could not process your request")
             return False
-        with open(fn,"wb") as file:
+        with open("rec.txt","wb") as file:
             while(True):
                 buf = self.recieve(1024)
                 if not buf:

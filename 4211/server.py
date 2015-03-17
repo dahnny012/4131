@@ -2,6 +2,7 @@ from random import randint
 import socket
 import io,os,sys
 import threading
+import traceback
 
 PORT = 1337
 USER = 1
@@ -57,6 +58,7 @@ class FtpServer:
     def route(self,client):
         header = client.recv(1024).decode('utf-8')
         args = header.split("\n")[0].split(" ")
+        print("Routing to " + args[COMMAND])
         self.handles[args[COMMAND]](client,header)
         return
     
@@ -101,7 +103,7 @@ class FtpServer:
     def download(self,client,header):
         if self.authToken(header):
             print("command accepted")
-            args = header.split(" ")
+            args = header.split("\n")[0].split(" ")
             try:
                 with open(args[CONTENTS] , "rb") as file:
                     client.send(bytes("OK","utf-8"))
@@ -111,6 +113,7 @@ class FtpServer:
                             break
                         client.send(buf)
             except:
+                traceback.print_exc()
                 client.send(bytes("ERROR","utf-8"))
         else:
             print("token rejected")

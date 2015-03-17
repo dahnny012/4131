@@ -11,6 +11,7 @@ COMMAND = 0
 TOKEN = 1
 HEADER =  0
 CONTENTS = 1
+EXCESS = 3
 
 class Tokens:
     def __init__(self):
@@ -56,7 +57,8 @@ class FtpServer:
         	t.run();
         	
     def route(self,client):
-        header = client.recv(1024).decode('utf-8')
+        header = client.recv(64)
+        header = header.decode("utf-8")
         args = header.split("\n")[0].split(" ")
         print("Routing to " + args[COMMAND])
         self.handles[args[COMMAND]](client,header)
@@ -69,36 +71,47 @@ class FtpServer:
         #print("No login credentials")
         if token == None:
                 print("Rejected a user")
-                client.send(bytes("INVALID",'utf-8'))
+                client.send(bytes("INVALID",'ASCII'))
                 client.close()
                 return
         print("Accepted a user")
-        client.send(bytes("ACCEPTED " + str(token),'utf-8'))
+        client.send(bytes("ACCEPTED " + str(token),'ASCII'))
         client.close()
         return
     def ls(self,client,header):
         if self.authToken(header):
             print("command accepted")
             files="file1.txt\nfile2.txt"
-            client.send(bytes(files,'utf-8'))
+            client.send(bytes(files,'ASCII'))
         else:
             print("token rejected")
-            client.send(bytes("ERROR No AuthToken",'utf-8'))
+            client.send(bytes("ERROR No AuthToken",'ASCII'))
         client.close()
         
-    def upload(self,client,header):
-        if self.authToken(header):
+    def upload(self,client,msg):
+        if self.authToken(msg):
             print("command accepted")
-            args = header.split(" ")
-            with open(args[CONTENTS] , "wb") as file:
-                while True:
-                    buf = client.read(1024)
-                    if not buf:
-                        break
-                    file.write(buf)
+            print(msg)
+            headerEnd = msg.find("\r")
+            header = msg[0:headerEnd]
+            file = header.split("\n")[0].split(" ")[CONTENTS]
+            excess = bytes(msg[headerEnd+1:],'ASCII')
+            print(excess)
+            #should be not but well ignore for now.
+            if os.path.isfile(file):
+                with open("uploaded.jpg" , "wb") as file:
+                    file.write(excess)
+                    while True:
+                        buf = client.recv(1024)
+                        if not buf:
+                            break
+                        file.write(buf)
+            else:
+                print("File already exists")
+                client.send(bytes("ERROR File Exists",'ASCII'))
         else:
             print("token rejected")
-            client.send(bytes("ERROR No AuthToken",'utf-8'))
+            client.send(bytes("ERROR No AuthToken",'ASCII'))
         client.close()
     def download(self,client,header):
         if self.authToken(header):
@@ -106,7 +119,7 @@ class FtpServer:
             args = header.split("\n")[0].split(" ")
             try:
                 with open(args[CONTENTS] , "rb") as file:
-                    client.send(bytes("OK","utf-8"))
+                    client.send(bytes("OK","ASCII"))
                     while True:
                         buf = file.read(1024)
                         if not buf:
@@ -114,10 +127,10 @@ class FtpServer:
                         client.send(buf)
             except:
                 traceback.print_exc()
-                client.send(bytes("ERROR","utf-8"))
+                client.send(bytes("ERROR","ASCII"))
         else:
             print("token rejected")
-            client.send(bytes("ERROR No AuthToken",'utf-8'))
+            client.send(bytes("ERROR No AuthToken",'ASCII'))
         client.close()
 
     def checkUserPass(self,user,password):

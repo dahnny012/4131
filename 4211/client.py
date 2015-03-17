@@ -1,6 +1,7 @@
 import socket
 import io,os,sys
 import threading
+import traceback
 
 HOST = "127.0.0.1"
 PORT = 1337
@@ -25,7 +26,7 @@ class FtpClient:
         self.token = ""
         self.quit = False
         self.handlers = {}
-        self.handlers["ls"] = self.default
+        self.handlers["ls"] = self.ls
         self.handlers["download"] = self.download
         self.handlers["upload"] = self.upload
         self.handlers["quit"] = self.disconnect
@@ -61,7 +62,7 @@ class FtpClient:
             self.send("login "+user + " " + password)
             
             #Recieve from server
-            data = self.recieve(1024).decode("UTF-8")
+            data = self.recieve(1024).decode("ASCII")
             
             # See if you got a token
             token = factory.createToken(data)
@@ -79,9 +80,9 @@ class FtpClient:
              
           
     def sign(self):
-        self.request = self.request +  "\n" + str(self.token) + "\n"
+        self.request = self.request +  "\n" + str(self.token) + "\n" + "\r"
         # Default just sends command and prints output
-    def default(self,header):
+    def ls(self,header):
         self.sign()
         self.connect()
         self.send(self.request)
@@ -92,18 +93,20 @@ class FtpClient:
     def upload(self,header):
         self.sign()
         self.connect()
+        self.send(self.request)
         try:
-            self.send(self.request)
             with open(header[CONTENTS],"rb") as file:
-                read = file.read(1024)
-                while(read):
-                    self.sendB(read)
-                    read = file.read(1024)
-            content = self.recieveAll()
-            print(content)
+                while True:
+                    buf = file.read(1024)
+                    if not buf:
+                        break
+                    self.sendB(buf)
             self.close()
+            self.request = "ls"
+            self.ls(None)
             return True
         except:
+            print("error on upload")
             return False
     def download(self,header):
         self.sign()
@@ -114,7 +117,7 @@ class FtpClient:
             self.close()
             return True
         except Exception:
-            print("error with download");
+            traceback.print_exc()
             return False
     def disconnect(self,header):
         self.quit = True
@@ -125,18 +128,14 @@ class FtpClient:
         if(self.fileError()):
             print("Server could not process your request")
             return False
-        with open("rec.txt","wb") as file:
+        with open("rec.jpg","wb") as file:
             while(True):
                 buf = self.recieve(1024)
                 if not buf:
                     break
                 file.write(buf)
-    def recResponse(self):
-        content = self.recieveAll()
-        print(content)
-        self.close()
     def fileError(self):
-        buf = self.recieve(1024).decode("UTF-8")
+        buf = self.recieve(64).decode("ASCII")
         buf = buf.split(" ")
         return buf[EVENT] == "ERROR"
         
@@ -144,7 +143,7 @@ class FtpClient:
         self.socket.close()
         self.request = ""
     def send(self,msg):
-        self.socket.send(bytes(msg, 'UTF-8'))
+        self.socket.send(bytes(msg, 'ASCII'))
     def sendB(self,msg):
         self.socket.send(msg)
     def recieve(self,size):
@@ -155,7 +154,7 @@ class FtpClient:
             buf = self.socket.recv(1024)
             if not buf:
                 break
-            data += buf.decode('utf-8')
+            data += buf.decode('ASCII')
         return data
     
 client = FtpClient()

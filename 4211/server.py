@@ -1,6 +1,7 @@
 from random import randint
 import socket
 import io,os,sys
+from os import walk
 import threading
 import traceback
 
@@ -82,8 +83,11 @@ class FtpServer:
 	def ls(self,client,header):
 		if self.authToken(header):
 			print("command accepted")
-			files="file1.txt\nfile2.txt"
-			client.send(bytes(files,'ASCII'))
+			f = []
+			for (dirpath, dirnames, filenames) in walk(os.getcwd()):
+				f.extend(filenames)
+				break
+			client.send(bytes("\n".join(f),'ASCII'))
 		else:
 			print("token rejected")
 			client.send(bytes("ERROR No AuthToken",'ASCII'))

@@ -3,7 +3,7 @@ import io,os,sys
 import threading
 import traceback
 
-HOST = "127.0.0.1"
+HOST = "kh4250-20"
 PORT = 1337
 EVENT  = 0
 CONTENTS = 1

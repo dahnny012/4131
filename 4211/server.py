@@ -41,8 +41,9 @@ class FtpServer:
                 self.users[line[0]]=line[1].split("\n")[0]
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind(("127.0.0.1",PORT))
+        self.socket.bind((socket.gethostname(),PORT))
         self.socket.listen(10)
+        print("Starting server " + socket.gethostname() + " at Port: " + PORT)
         self.tokens = Tokens()
         self.handles = {}
         self.handles["login"] = self.login

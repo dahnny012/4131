@@ -1,0 +1,53 @@
+{ "restarants":
+    [{
+        "name":"Keefer Court",
+        "code":"keefer",
+        "link":"http://www.yelp.com/biz/keefer-court-bakery-and-caf%C3%A9-minneapolis-2"
+        "description":"A Chinese bakery and restarant",
+        "address":"326 Cedar Ave S Minneapolis, MN 55454",
+        "phone":"(612) 340-0937",
+        "rating":"9/10",
+        "time":"10AM - 9PM. Closed on Tuesday"
+    },
+    {
+        "name":"Chipotle Mexican Grill",
+        "code":"chipotle",
+        "link":"http://www.yelp.com/biz/chipotle-mexican-grill-minneapolis"
+        "description":"You have to be living under a rock to not know",
+        "address":"800 Washington Ave SE Minneapolis, MN 55414",
+        "phone":"(612) 378-7078",
+        "rating":"9/10",
+        "time":"11AM - 10 PM"
+    },
+    {
+        "name":"Kowloon",
+        "code":"kowloon",
+        "link":"http://www.yelp.com/biz/kowloon-restaurant-minneapolis"
+        "description":"Among one of the better Chinese restaurants around campus.",
+        "address":"935 Washington Ave SE Minneapolis, MN 55414",
+        "phone":"(612) 623-3888",
+        "rating":"7/10",
+        "time":"M-F: 10:30PM - 10 PM."
+    },
+    {
+        "name":"Five Guys Burgers and Fries",
+        "code":"fiveGuys",
+        "link":"http://www.yelp.com/biz/five-guys-burgers-and-fries-minneapolis"
+        "description":"Award winning burger joint.",
+        "address":"1413 4th St SE Minneapolis, MN 55414",
+        "phone":"(612) 355-5500",
+        "rating":"8/10",
+        "time":"11AM - 10PM"
+    },
+    {
+        "name":"Korea Restaurant",
+        "code":"korea",
+        "link":"http://www.yelp.com/biz/korea-restaurant-minneapolis"
+        "description":"A korean restaurant",
+        "address":"221 Oak St SE Minneapolis, MN 55414",
+        "phone":"(612) 746-0559",
+        "rating":"7/10",
+        "time":"M-Sat: 11AM - 9PM"
+    }]
+    
+}

@@ -220,10 +220,101 @@ A file is to be shared among different processes, each
 of which has a unique number. The file can be accessed simultaneously by
 several processes, subject to the following constraint: The sum of all unique
 numbers associated with all the processes currently accessing the file must be
-less than n.Write a monitor to coordinate access to the file.
+less than n.
+
+Write a monitor to coordinate access to the file.
+
+typedef struct{
+    Mutex CounterLock;
+    int counter;
+} Lock;
+
+typedef struct{
+    Lock fileLocks[x];
+    FILE* files[x];
+} Monitor;
+
+// Could be abused by processes and keep subscribing to dominate a file.
+// Im willing to accept that exploit.
+
+FILE* subscribe(pid_t pid,int index){
+    // Pretend user already knows the index number
+    Lock fileLock = Monitor->fileLocks[index];
+    acquire(&fileLock->lock);
+    if((fileLock->counter + pid) < N){
+        fileLock->counter += pid
+        release(&fileLock->lock);
+        return Monitor->files[file];
+    }
+    else{
+        // Could busy wait but ill let the user decide what to do.
+        release(&fileLock->lock);
+        return NULL;
+    }
+}
+
+
+/* 
+   Potentially could be a abused by a process
+   so it must prove that it has the file
+*/
+void unsubscribe(pid_t pid,int index,FILE* file){
+    if(file != Monitor->files[index])
+        return;
+    Lock fileLock = Monitor->fileLocks[file];
+    acquire(&fileLock->lock);
+    fileLock->counter -= pid
+    release(&fileLock->lock)
+}
+
+
+Question 5 (10 points):
+
+Assume a multithreaded application uses only reader—writer locks for synchronization. 
+Applying the four necessary conditions for deadlock, 
+is deadlock still possible if multiple reader—writer locks are used?
+
+Conditions for Deadlock:
+
+Mutual Exclusion
+Hold and wait
+No Preemption
+Circular Wait
+
+Assumptions:
+A writer can only access when no readers.
+No readers can read when writer is writing.
+Writer will magically release the lock if it segfaults while it has the lock.
+
+The application will still experiance a deadlock because it 
+satisfies all four of the conditions. 
+    1) Either the readers or writer have mutual access
+    to lock. So if a writer never releases the lock due to 
+    some sort of error then all processes access the file are
+    deadlocked.
+    
+    2) A thread is able to hold multiple reader/writer locks.
+    If a thread has a writer lock but needs to write to another
+    variable then it is possible it become deadlocked because
+    processes are able to possess multiple locks.
+    
+    3) Only the holders of the resource lock can release. So if 
+    the holder magically errors out. There is nothing the system
+    can do.
+    
+    4) Similar to 2) where a thread waiting to write, that is
+    waiting to read ... etc.
+    
 
 
 
+Question 6 (10 points): 
 
-
-
+A single-lane bridge connects the two Vermont villages
+of North Tunbridge and South Tunbridge. Farmers in the two villages use this
+bridge to deliver their produce to the neighboring town. The bridge can become
+deadlocked if both a northbound and a southbound farmer get on the bridge at
+the same time (Vermont farmers are stubborn and are unable to back up). Using
+semaphores, design an algorithm that prevents deadlock. Initially, do not be
+concerned about starvation (the situation in which northbound farmers prevent
+southbound farmers from using the bridge, and vice versa).

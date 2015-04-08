@@ -252,8 +252,6 @@ FILE* subscribe(pid_t pid,int index){
         return NULL;
     }
 }
-
-
 /* 
    Potentially could be a abused by a process
    so it must prove that it has the file
@@ -318,3 +316,116 @@ the same time (Vermont farmers are stubborn and are unable to back up). Using
 semaphores, design an algorithm that prevents deadlock. Initially, do not be
 concerned about starvation (the situation in which northbound farmers prevent
 southbound farmers from using the bridge, and vice versa).
+
+
+Semaphore okToCross = init(1);
+
+
+/* This implentation doesnt support a north person crossing
+    while a north person is in the middle of crossing.
+    But this makes it more fair for the other side.
+*/
+cross(){
+    wait(okToCross);
+    // Cross
+    signal(okToCross);
+}
+
+Question 7.
+
+Most systems allow a program to allocate more memory
+to its address space during execution. Allocation of data in the heap segments of
+programs is an example of such allocated memory. What is required to support
+dynamic memory allocation in the following schemes?
+    a. Contiguous memory allocation
+        - The system needs to decide how much heap space it allows
+        the user to add. Then when it allocates initial program space
+        it can add N empty contigous blocks of memory.
+        
+        - If the system wants to support unlimited heap space. 
+        It needs to move the process to a new location when it exceeds 
+        it's inital allowed space.
+        
+        
+    b. Pure segmentation
+        If inital memory block is filled , the system
+        needs to move the segment to where a new location.
+    c. Pure paging
+        Moving is not required , system just needs to allocate additional pages.
+        
+Question 8.
+
+The BTV operating system has a 21-bit virtual address,
+yet on certain embedded devices, it has only a 16-bit physical address. It also
+has a 2-KB page size. How many entries are there in each of the following?
+
+
+a. A conventional, single-level page table
+2^21(process size)/2^11(page size) = 2^10 or 1Kb
+
+
+b. An inverted page table
+
+2^16(process size)/2^11 = 2^5 or 32 bytes
+
+
+Question 9.
+
+Consider a paging system with the page table stored in memory.
+
+    a. If a memory reference takes 50 nanoseconds, how long does a paged memory
+    reference take?
+    
+    Access page table, then reference it.
+    100 nanoseconds.
+    
+    b. If we add TLBs, and 75 percent of all page-table references are found in the
+    TLBs, what is the effective memory reference time? (Assume that finding a pagetable
+    entry in the TLBs takes 2 nanoseconds, if the entry is present.)
+    
+    
+    (.75)*50 + 100*(.25) + 2 = 64.5
+    
+
+Question 10.
+Consider the Intel address-translation scheme shown in Figure 8.22 (in the textbook).
+
+a. Describe all the steps taken by the Intel Pentium in translating a logical
+address into a physical address.
+
+The segment register points to the appropriate entry in the LDT or GDT. The
+base and limit information about the segment in question is used to generate
+a linear address. First, the limit is used to check for address validity. If the
+address is not valid, a memory fault is generated, resulting in a trap to the
+operating system. If it is valid, then the value of the offset is added to the value
+of the base, resulting in a 32-bit linear address (from the book).
+
+From the linear address we take the 1st 10 bits as the outer page. From the outer page table
+we take the next 10 bits in the linear address to locate the inner page table. The last 
+12 bits refer to the offset in the inner page to where the page is located. This would 
+be the physical address.
+
+-- Taken from the book.
+
+b. What are the advantages to the operating system of hardware that provides
+such complicated memory translation?
+
+The advantages of having such a complicated memory translation in
+hardware is that it would be more efficient. The hardware designer can
+make specific design choices that would speed up this process.CounterLock
+
+Another advantage would be that it reduces the complexity of the OS/kernel. 
+By seperating the process from the kernel it makes it less complicated because
+now its just a layer of hardware that manages memory instead of half software
+half hardware. 
+
+c. Are there any disadvantages to this address-translation system? If so, what
+are they? If not, why is this scheme not used by every manufacturer?
+
+There is a lot of indirection that needs to happen to locate the physical memory.
+And each page fault is costly because of this.
+
+Also it is not portable and is only specific to the pentium archeticture. From
+A OS developers point of view not all computers have pentiums so you might 
+have to write two seperate versions. From a cpu manufacturer point of view
+not all OSs use the same address translation system.

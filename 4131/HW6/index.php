@@ -1,3 +1,20 @@
+<?php
+    $file;        
+    switch($_GET['source']){
+        case 1:
+            $file = "restaurants.json";
+            break;
+        case 2:
+            $file = "new_restaurants.json";
+            break;
+        case 3:
+            $file = "final_restaurants.json";
+            break;
+        default:
+            die("Enter a valid source");
+    }
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,11 +37,11 @@
                                              
           </tr>
 <?php
-        // read json
-        $json = file_get_contents("new_restaurants.json");
-        $data = json_decode($json);
+        
+        $json = file_get_contents($file);
+        $data = json_decode($json)->restaurants;
         foreach($data as $entry){
-            $entry['code'] = preg_replace('/.jpg/',"",$entry['picture']);
+            $entry->code = preg_replace('/.jpg/',"",$entry->picture);
             makeRow($entry);
         }
 ?>
@@ -40,34 +57,34 @@
 
 <?php 
     function makeRow($element){
-        echo "<tr>
-                <td class=name>".
-                "<a href=\"".$element['url']."\">".
-                    $element['name'].
+        echo "<tr>".
+                "<td class='name'>".
+                "<a href=\"".$element->url."\">".
+                    $element->name.
                 "</a>".
                 "</td>".
-                "<td id=\"".$element['code']."\">".
-                    "<button onclick=\"showPicture('".$element['code']."')>Picture</button>".
+                "<td id=\"".$element->code."\">".
+                    "<button onclick='showPicture(\"".$element->code."\")'>Picture</button>".
                 "</td>".
-                "<td>".$element['type']."</td>".
-                "<td>".$element['address']."</td>
-                <td>".$element['phone']."</td>
-                <td>".$element['rating']."</td>
-                <td class=\"time>".
-                    getHours($element['hours'])
-                ."</td>
-             </tr>";
+                "<td>".$element->type."</td>".
+                "<td>".$element->address."</td>".
+                "<td>".$element->phone."</td>".
+                "<td>".$element->rating."</td>".
+                "<td class=\"time\">".
+                    getHours($element->hours).
+                "</td>".
+             "</tr>";
            
     }
     
     function getHours($hours){
-        echo "<ul>";
+        $schedule = "<ul>";
         foreach($hours as $hour){
-            echo "<li>".
-            $hour
+            $schedule .= "<li>".
+            $hour->day. " ".$hour->time
             ."</li>";
         }
-        echo "</ul>";
+        return $schedule."</ul>";
     }
 ?>
 

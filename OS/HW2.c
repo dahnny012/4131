@@ -1,3 +1,7 @@
+Danh Nguyen
+4460226
+
+
 Question 1 (20 points): 
 
 The first known correct software solution to the criticalsection

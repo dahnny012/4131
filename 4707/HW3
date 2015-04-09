@@ -19,16 +19,16 @@ c. (5 Points) LRU (Least Recently Used)
 d. (5 Points) Clock (The clock is currently pointing to C)
 
 
-a) |A|G|F|D|H|
+a) |A|F|G|D|H|
    
    
-b) |A|G|H|D|F|
+b) |A|G|F|D|H|
 
 
-c) |A|G|F|D|H|
+c) |A|G|H|D|F|
 
 
-d) |A|G|H|D|F|
+d) |A|H|F|D|G|
 
 
 
@@ -41,9 +41,9 @@ buffer pool rather than letting the operating system manage the buffer?
 Give two reasons in one sentence each.
 
 A database would want to manage its own buffer pool
-because it can then use it's own replacement policy and switch
-if needed , which then would be more optimized for the operations
-it must do on the memory like pinning and flushing.
+because it can then use it's own replacement policy and this 
+allows it to prevent a page from being replaced and flush it to disk
+when needed.
 
 
 3. (10 Points, 5 Points each) 
@@ -61,10 +61,10 @@ it. The Least Recently Used algorithm would be best because this file
 is constantly scanned we should replace the least frequently used frames
 and that would keep the file in memory.
 
-Assuming we can't fit the file into memory, a clock would be best since LRU
-would constantly page fault. Clock retains some of the desired qualities
-as it tries to keep pages recently used but none of the overhead.
-
+Assuming we can't fit the file into memory, LRU or a clock would be a bad choice
+since it would result in misses consecutively. MRU would be the best choice since
+the whole file is only briefly needed it will not get replaced by future operations
+not scanning the file.
 
 b. (5 Points) File pages are accessed according to a Zipfian distribution,
 i.e., popular items are requested very frequently, and unpopular
@@ -83,7 +83,10 @@ Answer the following questions:
         When will equality search is better using Unclustered B+Tree rather 
         than Sorted?
         
-        When there is a index on what we are searching.
+        When there is a index on what we are searching. Because a equality 
+        search on a sorted heap is a Dlog2B search and a search on a unclustered
+        index is a D(1+logF0.15B) search. On large datasets an equality search
+        would prove to be more efficient because of this.
         
     b. (5 Points) 
         Is it possible to have an Unclustered B+Tree index with
@@ -94,18 +97,16 @@ Answer the following questions:
         Alternative 2: <k, rid of data record with search key value k>
         Alternative 3: <k, list of rids of data records with search key k>
         
-        Yes but only one index in the tree can use Alternative 1. 
-        If the size of the data record is very large it would be 
-        better to use Alternative 1. Because reasons.
-        
-        
+        The index in alterntive 1 has to be clustered so it would not be 
+        possible to use it on a unclustered B+ tree.
         
         
     c. (5 Points) 
         What is the main difference between B-Tree (Not Binary
         Tree) and B+-Tree?
         
-        B-Tree leaves arent linked.
+        B-Tree leaves arent linked so you cant traverse the results linearly.Like
+        using the index in a B+ Tree to scan for a starting point for a range search.
  
 C)   
 1. (20 Points, 5 Points each) 
@@ -134,30 +135,22 @@ to repeatedly to scan for each index on the unclustered.
 On the clusted we'd have to search for each state. Still making 
 the amount of times we access the db a lot.
 
-OR
-
-Using each state scan for age > 10 using the clusted index 
-on <state,age>
-
 b. (5 Points) state =”CA
 Using the hash on state.
 
 c. (5 Points) age > 5 AND category=”Technology”
 
 Just scan the whole thing because it be costly 
-to repeatedly to scan for each index on the unclustered.
-On the clusted we'd have to search for each state. Still making 
+to repeatedly to scan for each index on the unclustered index.
+On the clustered we'd have to search for each state. Still making 
 the amount of times we access the db a lot.
 
-OR
-
-Using each state scan for age > 10 using the clusted index 
-on <state,age>
 
 d. (5 Points) state=”NY” AND age > 5 AND category=”Finance”
 
 Using the clustered index on <state,age>
-Search for <NY, 6> and scan until no longer state "NY"
+Search for <NY, 6> and scan until no longer state "NY".
+Then records with category ="Finance"
 
 
 2. (5 Points) 
@@ -178,6 +171,7 @@ then for each state run through and take the average.
 
 
 
+
 3. (20 Points, 4 Points each) 
     Suppose relation R has 1000 records and
     relation S has 5000 records. One page can contain 10 R records or 500 S
@@ -186,25 +180,25 @@ then for each state run through and take the average.
 a. (4 Points) 
     Index Nested Loop Join with Clustered B+Tree Index on S (R is the outer).
     
-    Scanned R records + R * r records * cost of using B+Tree index
-    100 + (100 * 10) * 2
+    Scanned R records + R * r records * (cost of using B+Tree index + cost to prob s index)
+    100 + (100 * 10) * (2 + 1) = 3100 I/Os
     
 b. (4 Points) 
     Index Nested Loop Join with Clustered Hash Index on R (S is the outer).
     
-    Scan S Records + S * s records * cost of using hash index
+    Scan S Records + S * s records * (cost of  hash index + cost to probe s)
     
-    10 + (10 * 500) * 1.2
+    10 + (10 * 500) * (1.2 + 1) = 11010 I/Os
     
 c. (4 Points) 
     Index Nested Loop Join with Unclustered B+Tree Index on S (R is the outer).
     
-    Scan R Records + (R * r records) * cost of using unclustered * matching s tuple
-    100 + (100 * 10) * 2 * 10
+    Scan R Records + (R * records)*(cost of unclustered * avg match s tuple)
+    100 + (100 * 10) * (2 + 5) = 7100 I/Os
     
 d. (4 Points) 
     Tuple Nested Loop Join (S is the outer).
     
     Scan S + S records * S * R
     
-    10 + (500 * 10 * 100)
+    10 + (500 * 10 * 100) = 500,010 I/Os

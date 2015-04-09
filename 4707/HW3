@@ -1,0 +1,210 @@
+1. (20 Points, 5 Points each) 
+
+Assume you have a buffer with a maximum
+capacity of 5 pages. Below is a queue of the current state of the buffer
+with its current pin count with the time when pin counts becomes 0 (the
+pages were inserted sequentially: Page A comes before Page B, etc. and
+time 0 came first before time 1 etc.).
+
+
+|A:1:NaN | B:0:2 | C:0:3 | D:1:NaN | E:0:1|
+
+
+Now, there are 4 pages (F, G, H, and I) need to be inserted into the buffer.
+For each buffer management policy below, show the result of the buffer
+after the insertion. Just show the Page name on each buffer slot.
+a. (5 Points) FIFO (First In First Out)
+b. (5 Points) MRU (Most Recently Used)
+c. (5 Points) LRU (Least Recently Used)
+d. (5 Points) Clock (The clock is currently pointing to C)
+
+
+a) |A|G|F|D|H|
+   
+   
+b) |A|G|H|D|F|
+
+
+c) |A|G|F|D|H|
+
+
+d) |A|G|H|D|F|
+
+
+
+2. (5 Points) 
+
+The file systems of modern operating systems also buffer data
+from disk in-memory for fast access, and they have very sophisticated
+replacement strategies. Why does a database system manage its own
+buffer pool rather than letting the operating system manage the buffer?
+Give two reasons in one sentence each.
+
+A database would want to manage its own buffer pool
+because it can then use it's own replacement policy and switch
+if needed , which then would be more optimized for the operations
+it must do on the memory like pinning and flushing.
+
+
+3. (10 Points, 5 Points each) 
+
+Consider a file that is stored on disk. What
+buffer manager replacement policies would you choose for each of the
+following file access patterns? Clearly state the reason for your choice;
+answers without a correct reason will receive zero points.
+
+a. (5 Points) The entire file is sequentially scanned many times.
+
+Assuming we can fit the entire file into the buffer it would be wise
+to keep the file memory so we dont have to constantly have to rescan
+it. The Least Recently Used algorithm would be best because this file
+is constantly scanned we should replace the least frequently used frames
+and that would keep the file in memory.
+
+Assuming we can't fit the file into memory, a clock would be best since LRU
+would constantly page fault. Clock retains some of the desired qualities
+as it tries to keep pages recently used but none of the overhead.
+
+
+b. (5 Points) File pages are accessed according to a Zipfian distribution,
+i.e., popular items are requested very frequently, and unpopular
+items are requested rarely.
+
+LRU would be best here since we cant sequentially flood the buffer since individual
+pages are accessed. LRU would keep the most requested pages in memory and that
+would be best since the overall amount of page faults would decrease since they
+are requested the most.
+
+
+4. (15 Points, 5 Points each)
+Answer the following questions:
+
+    a. (5 Points) 
+        When will equality search is better using Unclustered B+Tree rather 
+        than Sorted?
+        
+        When there is a index on what we are searching.
+        
+    b. (5 Points) 
+        Is it possible to have an Unclustered B+Tree index with
+        Alternative 1? If yes, what is the advantage of using Alternative 1
+        compared to Alternative 2 or 3? If no, why not?
+        
+        Alternative 1: Data record with key value k
+        Alternative 2: <k, rid of data record with search key value k>
+        Alternative 3: <k, list of rids of data records with search key k>
+        
+        Yes but only one index in the tree can use Alternative 1. 
+        If the size of the data record is very large it would be 
+        better to use Alternative 1. Because reasons.
+        
+        
+        
+        
+    c. (5 Points) 
+        What is the main difference between B-Tree (Not Binary
+        Tree) and B+-Tree?
+        
+        B-Tree leaves arent linked.
+ 
+C)   
+1. (20 Points, 5 Points each) 
+    Consider a relation with this schema:
+    
+    Companies(cid:integer, cname:string, age:integer, state:string,
+    category:string)
+    
+Suppose that the following indexes, all using Alternative (2) from your
+textbook for data entries, exist: a hash index on cid, an unclustered
+B+Tree index on age, a hash index on state and a clustered B+Tree index
+on <state, age>. What is the most selective access path for retrieving all
+Company tuples that satisfy that condition (only):
+
+Alternative 2: <k, rid of data record with search key value k>
+
+Hash on cid
+unclustered index on age
+hash on state
+clustered index on <state,age>
+
+a. (5 Points) age >10
+
+Just scan the whole thing because it be costly 
+to repeatedly to scan for each index on the unclustered.
+On the clusted we'd have to search for each state. Still making 
+the amount of times we access the db a lot.
+
+OR
+
+Using each state scan for age > 10 using the clusted index 
+on <state,age>
+
+b. (5 Points) state =”CA
+Using the hash on state.
+
+c. (5 Points) age > 5 AND category=”Technology”
+
+Just scan the whole thing because it be costly 
+to repeatedly to scan for each index on the unclustered.
+On the clusted we'd have to search for each state. Still making 
+the amount of times we access the db a lot.
+
+OR
+
+Using each state scan for age > 10 using the clusted index 
+on <state,age>
+
+d. (5 Points) state=”NY” AND age > 5 AND category=”Finance”
+
+Using the clustered index on <state,age>
+Search for <NY, 6> and scan until no longer state "NY"
+
+
+2. (5 Points) 
+
+Suppose that, for the above selection condition (b), you want to
+compute the average age for each State (i.e., group by state). For
+selection condition (b), describe the least expensive evaluation method.
+
+Scanning the entire record would be optimal here because it reduces
+the amount of times it is required to go to disk and since all the
+records are needed anyway there would be no point in selectively 
+getting them one at a time. Unless you wanted to operate on the data
+one at a time while data is being streamed but disk io is expensive
+might as well just get the whole thing.
+
+After scanning the entire thing just sort the data by State
+then for each state run through and take the average.
+
+
+
+3. (20 Points, 4 Points each) 
+    Suppose relation R has 1000 records and
+    relation S has 5000 records. One page can contain 10 R records or 500 S
+    records. What are the cost of the following join operation between R and S?
+    
+a. (4 Points) 
+    Index Nested Loop Join with Clustered B+Tree Index on S (R is the outer).
+    
+    Scanned R records + R * r records * cost of using B+Tree index
+    100 + (100 * 10) * 2
+    
+b. (4 Points) 
+    Index Nested Loop Join with Clustered Hash Index on R (S is the outer).
+    
+    Scan S Records + S * s records * cost of using hash index
+    
+    10 + (10 * 500) * 1.2
+    
+c. (4 Points) 
+    Index Nested Loop Join with Unclustered B+Tree Index on S (R is the outer).
+    
+    Scan R Records + (R * r records) * cost of using unclustered * matching s tuple
+    100 + (100 * 10) * 2 * 10
+    
+d. (4 Points) 
+    Tuple Nested Loop Join (S is the outer).
+    
+    Scan S + S records * S * R
+    
+    10 + (500 * 10 * 100)

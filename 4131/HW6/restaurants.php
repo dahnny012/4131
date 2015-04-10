@@ -58,6 +58,8 @@
 
 <?php 
     function makeRow($element){
+        $element->code = addslashes($element->code);
+        $element->hint = addslashes($element->code);
         echo "<tr>".
                 "<td class='name'>".
                 "<a href=\"".$element->url."\">".

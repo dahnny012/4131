@@ -48,15 +48,20 @@ function createImgNode(src,alt){
   return div;
 }
 
-function showPicture(name){
+function showPicture(name,alt){
   // deletes current
   // makes new pic
   if(name != current.parent){
     removeCurrent();
     bodyFlag = false;
-    var path = "images/"+name+".jpg";
+    if(name.search("http") < 0){
+      var path = "Pictures/"+name;
+    }else{
+      path = name;
+    }
     console.log("button");
-    var divNode = createImgNode(path,name);
+    var divNode = createImgNode(path);
+    divNode.title = alt;
     $(name).appendChild(divNode);
     current = {
       parent:name,

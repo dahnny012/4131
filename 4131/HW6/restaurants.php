@@ -19,7 +19,8 @@
 <html>
     <head>
         <title>My top 5 Restaurants</title>
-        <link rel="stylesheet" type="text/css" href="Style.css">
+        <link rel="stylesheet" type="text/css" href="restaurants.css">
+        <script src="Script.js"></script>
         <meta charset="utf-8">
     </head>
     <body>
@@ -41,7 +42,7 @@
         $json = file_get_contents($file);
         $data = json_decode($json)->restaurants;
         foreach($data as $entry){
-            $entry->code = preg_replace('/.jpg/',"",$entry->picture);
+            $entry->code =  $entry->picture;//preg_replace('/.jpg|.png|.gif/',"",$entry->picture);
             makeRow($entry);
         }
 ?>
@@ -52,7 +53,7 @@
 </html>
 
 
-<script src="Script.js"></script>
+
 
 
 <?php 
@@ -64,7 +65,7 @@
                 "</a>".
                 "</td>".
                 "<td id=\"".$element->code."\">".
-                    "<button onclick='showPicture(\"".$element->code."\")'>Picture</button>".
+                    "<button onclick='showPicture(\"$element->code\",\"$element->hint\")'>Picture</button>".
                 "</td>".
                 "<td>".$element->type."</td>".
                 "<td>".$element->address."</td>".

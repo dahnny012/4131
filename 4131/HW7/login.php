@@ -1,15 +1,34 @@
 <?php
+    session_start();
+    ini_set('display_errors','1'); error_reporting(E_ALL);
+    $errorFlag = false;
+    
     if(isset($_SESSION['user'])){
         header("Location: restaurants.php");
     }
     
-    if(authenticate($_POST['login'])){
+    if(!empty($_POST) && authenticate($_POST)){
         header("Location: restaurants.php");
+    }else{
+        if(!empty($_POST)){
+            $errorFlag = true;
+        }
     }
     
     
     function authenticate($info){
-        // authenticate here
+        if(strlen($info['user']) <= 0 || preg_match("/[^A-z0-9]/",$info['user']) || strlen($info['password']) < 6){
+            return 0;
+        }
+        $xml=simplexml_load_file("details.xml");
+        foreach($xml as $entry){
+            if($info['user'] == $entry->user
+            && $info['password'] == $entry->pass){
+                $_SESSION['user'] = (string)$entry->user; 
+                return 1;
+            }
+        }
+        return 0;
     }
 ?>
 
@@ -38,14 +57,22 @@
             </nav>
               <div class="col s12">
                   <div class="input-field col s3 offset-s4" id="msg">
+                      <?php 
+                        if($errorFlag)
+                            echo "Your username/password did not match any accounts";        
+                      ?>
                   </div>
-                  <form method="post" action="login.php">
+                  <form method="POST" action="login.php">
                       <div class="input-field col s3 offset-s4">
-                          <input class="tooltipped validate" id="user" type="text" data-tooltip="Alpha-Numeric and Underscores Only" data-position="right">
+                          <input name ="user" class="tooltipped validate" id="user" 
+                          type="text" data-tooltip="Alpha-Numeric and Underscores Only" data-position="right"
+                          autocomplete="off">
                           <label for="user">Username</label>
                       </div>
                       <div class="input-field col s3 offset-s4">
-                          <input class="tooltipped validate" id="password" type="password" data-tooltip="At least 6 characters" data-position="right">
+                          <input name="password" class="tooltipped validate" id="password" 
+                          type="password" data-tooltip="At least 6 characters" data-position="right"
+                          autocomplete="off">
                           <label for="password">Password</label>
                       </div>
                       <div class="input-field col s3 offset-s4">

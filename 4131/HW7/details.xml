@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?> 
+<db>
+    <entry>
+        <user>Hello</user>
+        <pass>world1</pass>
+    </entry>
+    <entry>
+        <user>1</user>
+        <pass>2</pass>
+    </entry>
+    <entry>
+        <user>3</user>
+        <pass>4</pass>
+    </entry>
+    <entry>
+        <user>5</user>
+        <pass>6</pass>
+    </entry>
+</db>

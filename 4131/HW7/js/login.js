@@ -7,6 +7,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
       node:document.getElementById("msg"),
       print:function(){
           if(!this.user && !this.pass){
+              if(this.node.textContent.trim() !== ""){
+                  this.node.className += " red";
+                  return;
+              }
               this.node.textContent = "Please Sign in";
               this.node.className = this.node.className.replace("red","");
               return;

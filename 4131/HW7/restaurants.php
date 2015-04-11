@@ -1,4 +1,7 @@
 <?php
+    session_start();
+    
+    
     if(!isset($_SESSION['user'])){
         header('Location: login.php');
     }
@@ -15,7 +18,7 @@
             $file = "final_restaurants.json";
             break;
         default:
-            die("Enter a valid source");
+            $file = "restaurants.json";
     }
 ?>
 
@@ -28,7 +31,7 @@
         <meta charset="utf-8">
     </head>
     <body>
-        <h1>5 Restaurants I like</h1>
+        <h1>Welcome <?php echo $_SESSION['user'] ?></h1>
           <a href="Form.html">Add a Suggestion</a>
         <table border="1">
           <tr>

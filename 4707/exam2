@@ -1,0 +1,226 @@
+
+
+
+Pages:
+    The unit of information read from or written to disk.
+    Typical values 4kb,8kb
+
+
+#Data on External Storage    
+Disks:
+    Can retrieve random page at fixed cost.
+        reads on consectuive pages is much cheaper than
+        random order.
+        
+Tapes: 
+    Pages are sequentially read.
+        Cheaper($) than disk.
+
+File organization:
+    Arranging a file of records on ext. storage.
+        rid - used to identify disk address of the page
+        that has the record.
+        
+        indexes - Way to find rid based on a search key.
+
+# Data on External Storage(Archeitecture)
+
+Buffer Manager:
+    Reads data into memory and writes back to disk.
+    
+    rids are passed to the manager to locate a page
+    in memory
+    
+Disk space manager:
+    Allocates disk space upon request.
+    
+    Also tracks free pages
+    
+#Disks and Files
+
+DBMS: stores information on disk
+    Read: transfer data from disk to memory
+    
+    Write: transfer data from ram to disk.
+    
+    A disk io is high cost. Try to minimize.
+    
+Why Not Store Everything in Main Memory?
+    
+    Disk space is cheaper in size than memory.
+    
+    Memory is cannot persist through a crash.
+    
+#Components of a Disk
+
+Spins
+Layered disk platters.
+Many heads but only one reads/writes at one time.
+
+
+#Accessing a Disk Page
+
+Disk IO:
+    seek time: moving arms to position disk head on track.
+    rotational delay: waiting for block to rotate under head.
+    transfer time: actually moving data to/from disk surface.
+    
+Majority Cost:
+    Seek and rotational delay dominate.
+    
+Key to lower IO cost:
+    Reduce seek/rotation.
+    Software/Hardware solutions
+
+#Disks
+
+Advantage over tapes:
+    random access > sequential.
+
+Data is stored and retrieved in units called disks blocks or pages.
+    
+**** Unlike Ram , location on disk matters. Memory locality = better speed.
+
+
+#Storage Hierarchy
+
+Hierarchy:
+    CPU cache
+    RAM
+    Disk
+    Tapes
+    
+#Buffer Manager
+
+Purpose:
+    Software layer resposible for bringing pages from disk to memory.
+    
+Managing:
+    Partitions memory(buffer pool) into a collection of pages(frames).
+    
+Limitations:
+    All of the db cannot be put into memory so manager brings
+    in pages as needed. What pages is determined by replacement
+    policy.
+    
+#Buffer Pool
+    [x][ ][x][ ][][] Disk Page
+    [ ][ ][ ][ ][][] Free frame
+    [ ][ ][ ][x][][]
+
+    Data must be in memory for operations.
+    
+    <frame#,pageid> pairs is maintained.
+    
+    Every frame has:
+        Pin_count:
+            number of users who are using that frame.
+            
+        Dirty bit:
+            memory has been modified since being put into buffer
+            will need to be written to disk if it has.
+
+# When a Page is Requested...
+-------------------
+Not in Pool:
+    Open page frames(pin_count =0)
+        choose one
+        if dirty write to disk.
+        read page into frame.
+        
+Pin the page (increment the pin count) and return its return address.
+---------------------
+    
+If requests can be predicted (e.g. sequential scans) then
+pages can be pre-fetched several pages at a time.
+
+# More Buffer Management
+
+Requestor of page is resposible for unpinning and dirtying.
+    
+Page in the pool may be requested many times
+    A page can only be replaced if pin_count = 0
+    
+If no frame has zero pin_count and a new paeg is requested:
+    Wait until some page is released.
+    Abort transaction
+
+Multiple transactions pinning a page may result in conflicts.
+    Concurrency to the rescue.
+    
+#Buffer Replacement Policy
+
+A frame is chosen by a replacement policy.
+
+LRU:
+    Can be implemented as a queue of pointers for frames
+    with zero pin count.
+    
+    Frame is added to end when pin_count = 0
+    
+    Head is chosen
+    
+LRU + Clock:
+    var current = 1....N
+    
+    if !(current ok)
+        current++;
+    
+    frame{
+        reference = 0 , 1 if pin_count = 0
+    }
+    
+    if(current.reference == 1)
+        reference = 0
+        current++
+        // This way, a recently reference page is less likely to
+        // be replaced.
+    
+    if(current.pin_count = 0,reference = 0)
+        return current
+        
+#Buffer Replacement Policy Continued.
+
+Suprise Suprise Policy has a impact on # Disk I/Os
+
+Sequential Flooding:
+    Nasty situation caused by LRU + repeated sequential scans
+        #buffer frames < # pages in file means constant page fault.
+        
+Other policies:
+    MRU,Random,FIFO,Random
+    
+# DBMS vs OS File System 
+
+*** OS does disk and buffer management, why not let it take care of db?
+
+Good question my son.
+
+Differences in OS support: portability issues.
+
+Buffer Management in DBMS requires abiltiy to:
+    pin a page/force a page.
+    
+    adjust replacement policy and pre fetch pages
+    based on patterns.
+
+
+#Record Formats: Fixed Length
+
+    [L1][L2][L3][L4]
+    
+    Address = B+L1+L2
+    
+Information about field types same for all records in a file.
+Stored in system catalogs
+
+Finding ith field does not require scan record.
+
+
+#System Catalogs
+
+For each index:
+    structure and search key fields.
+    
+For each relation:
+    

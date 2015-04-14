@@ -223,4 +223,119 @@ For each index:
     structure and search key fields.
     
 For each relation:
+    name,file name,file structure (e.g. Heap File)
+    attribute name and type for each attribute
+    index name, for each index
+    integrity constraints.
+    
+For each view:
+    view name and definition
+
+Stats:
+    authorization,buffer pool size ... etc.
+    Catalogs are stored as relations 
+    
+#Some catalog im not going to draw.
+
+
+#Record Formats: Variable Length
+
+Two alternative formats (# fields is fixed):
+
+    #1
+    Field Count F
+    Delimiter $
+    [F][  ][$][  ][$][  ][$][  ][$]
+    
+    #2
+    Pointer p
+    [p1][p2][p3][ p1 ][  p2  ][ p3   ]
+    Array of field offsets
+
+#2 offers direct access to ith field, efficient
+storage of nulls; small directory overhead.
+
+
+#Page Formats: Fixed Length Records
+
+Packed vs Unpacked:
+
+    Packed:
+        Contigous Space.
+        N = # number of records.
+        
+    Unpacked:
+        Fragmented Contigous Space.
+        Bitmap to maintain open spaces.
+
+record id = <page id,slot #>
+    In first alternative, moving records for free space
+    management changes rid. may not be acceptable.
+
+
+
+#Page Formats: Variable Length Records
+
+A index of array pointers to point to pages.
+
+Can move records on page without changing rid;
+so, attractive for fixed-length records too.
+
+#File of Records
+
+Page or block is OK when doing I/O,  
+but higher levels of DBMS operate on records
+and files of records.
+
+File:
+    A collection of pages, each containing a collection of records.
+    Must support:
+        - insert/delete/modify record.
+        - read a particular record.
+        - scan all records (possibly with some condititions on the records
+        to be retrieved.
+
+#Unordered (Heap) Files
+
+Simplest file structure, no particular order.
+
+growing and shrinking, disk pages are allocated and de-allocated.
+
+To support record level operations we must:
+    keep track of the pages in a file. 
+    keep track of free space on pages.
+    keep track of the records on a page.
+    
+There are many alternatives for keeping track of this.
+
+
+#Heap File Implemented as a List
+
+Two lists:
+    One with pages
+    One with free pages
+
+The header page id and Heap file name must be stored someplace.
+
+Each page contains 2 pointers plus data.
+
+
+#Heap File Using A Page Directory
+
+Page Tables linked.
+
+Entry for a page can include number of free bytes on the page.
+
+The directory os a collection of pages;
+
+
+
+
+
+
+    
+    
+    
+    
+    
     

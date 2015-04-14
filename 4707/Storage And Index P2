@@ -1,0 +1,442 @@
+#Disk Space Management
+
+Lowest layer of DBMS software
+manages space on disk.
+
+Higher levels call upon this layer to:
+
+    allocate/de-allocate a page
+    
+    read/write a page.
+    
+Request for a sequence of pages are done 
+sequentially.
+    Higher levels this is encapsulated.
+    
+    
+#Alternative File Organizations
+
+Many alternatives exist:
+
+    Heap:
+        Suitable when retrieving all records
+    Sorted heap:
+        Records are retrieved in a certain order and only range
+        is needed.
+    Indexes:
+        Data structures to organuze records via trees/hashing.
+            Speeds up searches on subsets based on values.
+            
+            Updates are much faster
+
+#Indexes
+
+    Index:
+        A index on a file speeds up selections on the search key field for that
+        index.
+            Any subset of the fields of a relation can be a search key for an
+            index on the relation.
+            
+            Search key is not the same as key.
+    
+    An Index contains a collection of data entries:
+        efficient retrieval of all data entries k* with a given key k.
+            Given k* we can find key k in 1 I/O.
+            
+
+#B+ Tree Indexes
+
+    Some B+ tree diagram.
+    Like a binary search tree.
+    Think of it as a tree except each node can have multiple children.
+    Leaves are linked.
+    
+    Leaf Pages contain data entries and are chained (prev,next)
+    Non-leaf pages have index entries; only used to direct searches
+    
+    [pointer][key][pointer][key]
+    
+
+#Example B+ Tree
+
+    Searching is like a binary search
+    
+    Insert/Delete: Find data entry in leaf then change it.
+        Might have to adjust parent recursively.
+        
+
+#Hash Based Indexes
+
+    Good for equality Searches.
+    
+    Index is a collection of buckets:
+        Bucket = primary page plus zero or more overflow pages
+        Bucket contains data entries
+        
+    Hashing function H:
+        Bucket in which data entry for record r belongs.
+        H looks at the search key fields of r.
+            No need for "index entries" in this scheme.
+            
+#Alternatives for Data Entry K* in index.
+
+    In a data entry k* we can store:
+        1.data record with key value k
+        2.<k,rid of data record with search key k>
+        3.<k,list of rids with data records with search key k>
+
+    Choice of alternatives for data entry is statistically independent
+    to the indexing technique used to locate data entries with a given value k.
+        Example of indexing techniques: B+ trees, hash ...etc
+        
+        Typcally, index contains supplementary information that directs 
+        searches to the desired data entries.
+    
+#Continued
+
+    Alternative 1:
+        If this is used, index structure is a file organization for
+        data records (instead of a heap file or sorted file)
+        
+        At most one index on a given collection of data records
+        can use Alt 1.
+        
+        If data records are very large, # of pages containing data
+        entries is high. Implies auxillary information in the index
+        is also large.
+        
+
+#Continued
+
+    Alternatives 2 and 3:
+        Data entries typically smaller than data records.
+        
+        Better than Alt. 1 with large data records, especially if search keys 
+        are small.
+        
+        Portion of index structure used to direct search,which depends
+        on size of data entries, is much smaller than Alt 1.
+        
+        
+    Alternative 3:
+        More compact than Alt 2, but leads to variable sized data entries
+        even if search keys are of fixed length.
+        
+        This is due to being a list.
+        
+
+#Index Classification
+    
+    Primary vs secondary:
+        if a search key contains a primary key -> primary index.
+            Unique index:
+                Search key contains a candidate key.
+
+    Clustered vs Unclustered:
+        If order of data rcords is the same as, or close to, order of data entries
+        then called clustered index.
+            Alt 1:
+                implies clustered in practice,clusterd also Alt 1.
+            
+            A file can be clustered on at most oen search key.
+
+            Cost retrieving data records:
+                varies greatly based on whether index is clustered or not.
+            
+    
+#Clustered vs Unclustered Index.
+
+    Two diagrams of a clustered and unclusted.
+    
+    Suppose that Alt 2. is used for data entries, and that the data
+    records are stored in a Heap File.
+        To Build a clustered index:
+            Sort the heap file(with some free space on each page for inserts)
+            
+        Overflow pages:
+            may be needed for inserts.
+            
+            In order of data recs is close to but not identical to the sort order.
+            
+
+#Cost Model Analysis
+
+    IO dominant factor so cpu is ignored:
+    
+        B: Number of data pages
+        R: Number of records per page.
+        D: (Average) time to read or write disk page.
+    
+        Measuring IOs ignores prefetch.
+        
+        Average-case: Generalize the numbers on average use case.
+        
+        Size of the data entry is 10% of the corresponding record.
+            Good enough to show the overall trends.
+            
+#Comparing File organization
+    
+    Heap Files:
+        (random order; insert at end)
+    
+    Sorted Files:
+        sorted on <age,sal>
+    
+    Clustered B+ tree file:
+        Alt 1, search key <age,sal>
+    
+    Heap file with unclustered B+ tree index:
+        search key on <age,sal>
+    
+    Heap file with unclustered hash index:
+        search key on <age,sal>
+        
+#Operations to compare
+
+    Scan:Fetch all records
+    Equality Search
+    Range Selection
+    Insert a Record.
+    Delete a record.
+    
+#Assumptions in Our Analysis
+
+    Heap Files:
+        Equality selection on key; exactly one match.
+        
+    Sorted Files:
+        Files compacted after deletions.
+    
+    Indexes:
+        Alt 2. 3.: Data entry size = 10% size of record.
+        
+        Hash: No overflow buckets
+            80% page occupancy => File size = 1.25 data size.
+            
+        Tree: 67% occupancy (this is typical)
+            Implies File size = 1.5 data size.
+            
+#Cost of Operations
+
+    Some table of the operations
+            Scan    Equality    Range   Insert  Delete
+    Heap:   BD      .5BD        BD      2D      Search + D
+            Scan:
+                Each memblock * read time
+            Equality:
+                Pretend the data will be at the half way mark of our scan.
+                Half Mem * read time
+            Range:
+                Scan entire thing because no order.
+            Insert:
+                Read memory block in , Write memory block out.
+            Delete:
+                Search for deletion, Write Changes.
+                
+    Sorted: Scan    Equality    Range    Insert      Delete
+            BD      Dlog2B      D(log2B  Search+BD   Search+Bd     
+                                + #pgs 
+                                match)
+            Scan:
+                See heap
+            Equality:
+                Binary search * time to read each block.
+            Range:
+                Equality + Sweep left-right
+            Insert:
+                Binary Search and shift memory(expensive)
+            Delete:
+                See insert.
+                
+    Clus:   Scan    Equality    Range       Insert      Delete
+            1.5 BD  DlogfB      D(Eq+match) Search + D  Search + D 
+            
+            Scan:
+                assuming 60% full
+            Equality:
+                Search tree,f = # of indexes at each level.
+            Range:
+                Equality + sweep left-right.
+            Insert:
+                Equality + cost of writing to disk. 
+                Index changes not factored in.
+            Delete:
+                See insert.
+    Unclus: Scan        Equality        Range           Insert      Delete
+            BD(R+0.15)  D(1+log.15B)    D(Eq+ #recs)    Eq + 2D     Eq + 2D
+            
+            Scan:
+                Read All Pages, For each page read all records.
+            Equality:
+                Cost of finding page + cost of retrieving record.
+            Range:
+                Equality Search for each matching record.
+            Insert:
+                Searching and then writing back
+            Delete:
+                see insert
+        
+    hashUC:  Scan        Equality   Range   Insert  Delete
+            BD(R+.125)   2D         BD      Eq+2D   Eq+2D
+            
+            Scan:
+                Full scan, assume 80% occupancy
+            Equality:
+                hash function read the file , read the records.
+            Range:
+                Just scan the whole thing.
+            Insert:
+                You aint even know it.
+                
+#Understanding the Workload
+
+    For each query in the workload:
+        Which relations does it access?
+        Which attributes are retrieved?
+        Which attributes are involved in selection/join conditions?
+            How selective are these conditions likely to be?
+    
+    For each update in the workload:
+        Which attributes are involved in selection/join conditions?
+            How selective are these conditions likely to be?
+    
+        The type of update (INSERT/DELETE/UPDATE), and the 
+        attributes that are affected.
+        
+#Choice of Indexes
+    
+    What indexes should we create?
+        Which relations should have indexes?
+        What field(s) should be the search key?
+        Should we build several indexes?
+    
+    For each index, what kind of an index should it be?
+        Clustered? Hash/tree?
+        
+#Cont.
+
+    One approach: 
+        Consider the most important queries in turn.
+        Consider the best plan using the current indexes.
+            See if a better plan is possible with an additional index.
+                if so create it.
+                
+            Obviously this implies that we must understand how a DBMS
+            evaluates queries and creates query evaluation plans!
+            
+            For now, we discuss simple 1-table queries.
+            
+    Before creating an index, must also consider the impact
+    on updates in the workload.
+        Trade-off:
+            Indexes can make queries go faster, updates slower.
+            
+            Require disk space, too.
+    
+#Index Selection Guidelines
+
+    Attributes in Where clause are candidates for index keys.
+        
+        Exact match conditions suggest hash index.
+        
+        Range query suggests tree index.    
+            Clusterig is especially useful for range queries;
+            can also help on equality queries if there are many 
+            duplicates.
+            
+#Continued
+    
+    Order of attributes is important for range queries.
+    Indexes may sometimes enable index-only strats.
+        Clustering not imporant here
+        
+
+#Examples of Clustered Indexes
+
+    Some sql queries.
+    
+    SELECT  E.dno
+    FROM    Emp E
+    WHERE   E.age>40
+    
+    SELECT  E.dno, COUNT(*)
+    FROM    Emp E   
+    WHERE E.age>10    
+    GROUP BY E.dno
+    
+    SELECT  E.dno
+    FROM    Emp E
+    WHERE   E.hobby=Stamps
+    
+    B+ tree index on E.age can be used to get tuples.
+        How selective is the condition?
+        In the index clustered?
+    Consider the Group By query.
+        If many tuples have E.age > 10,
+            using E.age index and sorting the retrieved
+            tuples may be costly.
+        
+        Clustered E.dno may be better!
+        
+    Equality queries and duplicates:
+        clustering on E.hobby helps!
+        
+
+#Summary
+
+    If selection queries are frequent, sorting
+    the file or building an index is important.
+    
+    Index is a collection of data entries plus a way
+    to quickly find entries with given key values.
+    
+
+#Continued
+
+    Data entries can be actual data records,<key,rid>
+    pairs , or <key,rid-list> pairs.
+        Choice orthogonal to indexing technique used to
+        locate data entries with a given key value.
+
+    Can have several indexes on a given file of data records
+        Each with a different with search key.
+
+    Indexes can ve classified as clustered vs unclustered,
+    and primary vs secondary.
+        
+        
+#Continued
+
+    Indexes must be chosen to speed up important
+    queries (and perhaps some updates)
+        Index maintenance overhead on updates to key fields.
+        
+        Choose indexes that can help many queries, if possible.
+        
+        Build indexes to suppport index-only strategy.
+        
+        Clustering is an imporant decision; only one index on
+        a given relation can be clustered.
+        
+        Order of fields in tuple key matters.
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

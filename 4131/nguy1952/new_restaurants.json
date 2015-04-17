@@ -1,0 +1,77 @@
+{"restaurants": [
+	{
+		"name": "Chipotle",
+		"type": "American",
+		"address": "2001 SE University Ave Ste 100 Minneapolis, MN 55455",
+		"phone": "(612) 617-9464",
+		"rating": "3",
+		"hours": [
+				{"day": "Mon-Sun", "time": "11:00am - 10:00pm"}
+		],
+		"url": "http://www.yelp.com/biz/chipotle-mexican-grill-minneapolis",
+		"picture": "chipotle.jpg",
+		"hint": "Chipotle Hint"
+	},
+	{
+		"name": "Raising Cane's",
+		"type": "American",
+		"address": "825 Washington Ave SE, Minneapolis, MN 55455",
+		"phone": "(612) 378-3243",
+		"rating": "4",
+		"hours": [
+				{"day": "Mon-Thu", "time": "10:30am - 11:00am"},
+				{"day": "Fri-Sat", "time": "10:30am - 12:00am"},
+				{"day": "Sun", "time": "10:30pm - 11:00pm"}
+		],
+		"url": "http://www.yelp.com/biz/raising-canes-chicken-fingers-minneapolis",
+		"picture": "canes.jpg",
+		"hint": "Raising Cane's Hint"
+	},
+	{
+		"name": "Pagoda",
+		"type": "Japanese/Malaysian",
+		"address": "1417 SE 4th St, Minneapolis, MN 55455",
+		"phone": "(612) 378-4710",
+		"rating": "3",
+		"hours": [
+				{"day": "Mon-Thur", "time": "11:00am - 10:00pm"},
+				{"day": "Fri", "time": "11:00am - 12:00pm"},
+				{"day": "Sat", "time": "11:00am - 12:00am"},
+				{"day": "Sun", "time": "10:00pm - 11:00pm"}
+		],
+		"url": "http://www.yelp.com/biz/pagoda-minneapolis-4",
+		"picture": "pagoda.jpg",
+		"hint": "Pagoda Hint"
+	},
+	{
+		"name": "Tamarind",
+		"type": "Indian",
+		"address": "99 Hudson St, New York, NY 10013",
+		"phone": "(212) 775-9000",
+		"rating": "4",
+		"hours": [
+				{"day": "Mon-Thur", "time": "11:00am - 10:00pm"},
+				{"day": "Fri", "time": "5:00pm - 2:00am"},
+				{"day": "Sar", "time": "12:00pm - 11:00pm"},
+				{"day": "Sun", "time": "12:00pm - 10:00pm"}
+		],
+		"url": "http://www.yelp.com/biz/tamarind-new-york-4?osq=indian+food",
+		"picture": "tamarind.jpg",
+		"hint": "Tamarind Hint"
+	},
+	{
+		"name": "The Cheesecake Factory",
+		"type": "American (Traditional)",
+		"address": "2715 Southdale Center, Edina, MN 55435",
+		"phone": "(952) 653-3333",
+		"rating": "3.5",
+		"hours": [
+				{"day": "Mon-Thur", "time": "10:00am - 11:00am"},
+				{"day": "Fri-Sat", "time": "11:00am - 12:30am"},
+				{"day": "Sun", "time": "10:00am -11:00pm"}
+		],
+		"url": "http://www.yelp.com/biz/the-cheesecake-factory-edina?osq=cheese+cake+factory",
+		"picture": "cheesecake.jpg",
+		"hint": "The Cheesecake Factory Hint"
+	}
+]}

@@ -1,0 +1,281 @@
+#Consistency Semantics
+
+    What happens in case of conflicts?
+    
+    
+    Unix Semantics:
+        Writes are immediatly visible to all users.
+        
+    Session Semantics:
+        Session: series of accesses between open,close
+        
+        Changes are visible to later sessions only after
+            Each user is given a copy of the file.
+
+            This is called a session.
+                User a has a file , does some read and write. close
+                
+                User b,c same thing....etc
+                
+                Any changes to a file after open, is visible to you.
+                
+                After a close changes are visible to everyone.
+                
+                This can allow for caching multiple writes.
+        
+        Immutable file smantics:
+            A shared file cannot be changed.
+            
+#File Protection
+
+    How to prevent unathoreized users from accessing files?
+    
+    Access Controler:Access dependent on user identtiy.
+    
+    Techiques:
+        Access control list(acl): Each file has a list of users
+        and their access types. Problem?
+        
+        Access attributes: user,group, others. Could allow
+        ACL to be added if needed.
+        
+        Password protection: Each file (or group) has a 
+        password. Problem?
+        
+        
+OWARIMASU!
+
+
+#File System Implementation
+
+    File System Layout and Structure
+    
+    File System Data Structures
+    
+    Storage Allocation and Management
+    
+    File System Recovery
+    
+
+#continued
+
+    Issues:
+        How is the data organized?
+        
+        Where is meta-info kepy
+        
+        How to achieve space/performance efficiency
+
+#Layered File System Structure
+
+    ## Comments
+        In reality not many will be designed this way.
+        Abstracted like this for learning purposes.
+    
+        Niggies begins to draw--->
+            [App]
+            Aether --> [Logical Fs][File-Organization][Basic-FS][I/O control]
+            [Disk]
+
+    Logical File System:
+        manages file system metadata
+        
+        file organization, e.g directories
+        
+        file control block(FCB): file indo,e.g., inode
+        
+    File-Organization module:
+        Translates logical file blocks to physical blocks
+        
+        Free space management and block allocation
+
+    Basic File System:
+        Peformes IO on storage device....
+        
+        
+        
+#File System Data Structures
+
+    ##Comments
+    
+    File System metadata:
+        info about disk paritions, directories,files,data
+        
+    File Systems Data Structures:
+        Generally Persistent
+        
+        In-memory: for quuick access,caching
+        
+    
+# On-Disk Structures
+
+    Boot-control block:
+        Used to boot OS from disk
+        First block of volume.
+        
+    Volume COntrol Block:
+        contains info about volume
+        size,block size,free blocks...etc
+        UNIX superblock
+        
+    Volume picture:
+        [Super block][FCBs][Data for file]
+    
+    Directory Structure
+        File Names, file ids 
+        Super block will have some sort of pointer data structure to files.
+    Per-File FCB:
+        file metadata
+        
+#In-Memory Structures
+
+    Mount-table:
+        Information about mounted volumes
+    
+    Directory Cache:
+        Info about recently accessed directories
+        
+    System open-file table:
+        FCBs of all open files
+        
+    Per-process open-file table:
+        Pointers to system open-file table entries.
+        
+    Buffers:
+        Data being read/written from/to disk.
+        
+
+#File System Structures
+    
+    Volume-level;
+        Mount Table
+        
+    File-level:
+        File COntrol
+        
+        
+        
+#Mount Table
+
+    In-memory mount table:
+        COntains entries for mounted file systems
+        
+        each entry contains a pointer to file system,types
+        
+        Windows: Entries for each drive(C:,D:,etc.)
+        
+        Unix: In-memory inode of mount point directory
+        is flagged, contains pointer to mount table entry
+        
+        
+    What does OS do while mounting a volume?
+        
+        Verifies that device contains valid file system
+        
+        Adds an entry in the in-memory mont table.
+        
+#File Control Block
+
+    "file level metadata"
+    
+    Contains metadata about file:
+        Unix->inode
+        File properties
+        pointers to disk blocks containing file data
+        
+    Directory can be treated as a special file.
+        Can have its own FCB
+        
+        Will contain list of <filename,FCB>
+        
+    
+#Inode Structure
+    
+    [File Properties]
+    [Direct Data Block pointers]
+    [single,
+        double,
+            triple indirect ptr]
+    
+    Generally fairly small.
+    
+    Any reason?
+        Theres a lot of files lul.
+        
+#In-Memory File Tables
+
+    System-wide open-file table:
+        Contains FC
+        
+        ...
+        
+        
+#UNIX: In-Memory File Tables
+
+    In-Memory table:
+        For every file you open, contains a inode.
+        
+        You just need one inode a file.
+    
+    Per-Process Open-File Table:
+        FD is a index in this.
+        
+    System File Table:
+        2 process opening a file = 2 entries in the table.
+        
+        Seems Redundant but keeps track of open mode
+        and offset
+    
+    Why Unix WHY!!!
+        When you fork a process you want to keep that informaton.
+        
+        Useful in Pipes.
+        
+    
+#File Open
+
+    What happens when user calls:
+        open("file","RW")
+    
+    Several steps:
+        Search system-wide open-file table for file1 FCB
+        
+        If not found, search directory structure(cached in memory
+        or from disk)
+        
+        Copy file1 FCB into system-wide open-file table
+        
+        Create a new entry in per-process table pointing to file1 FCB
+        in system table.
+        
+        Initialize mode(RW), file offset in per-prrocess table entry
+        
+        return index to per-process table entry as the file descriptor
+        
+    
+    read(fd,100,buf)
+    
+    1. Use the fd to index into the process table.
+    
+    2. Use this to find the inode.
+    
+    3. Check Permissions.
+    
+    4. Find disk location corresponding to the offset.
+    4a. Find it in cache.
+    
+    5. Read the data.
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+

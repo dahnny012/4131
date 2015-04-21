@@ -267,11 +267,44 @@ OWARIMASU!
     5. Read the data.
     
     
+#File System Implementation
+
+    File System Layout and Structure
+    
+    File System Data Structures
+    
+    Storage Allocation and Management
+    
+    File System Recovery
+    
 
 
+#File System Implementation
+
+    Diagram of hard disk.
+
+    Directory Implementation
+    
+    File Implementation
+        Space Allocation
+        
+        Free Space Management
+        
+#Directory Implementation
+
+    How does directory get implemented on disk?
+    
+    Linear list of file entries
+        Problems?
+    
+    Sorted List:
+        Could keep entries sorted via B-tree
+        
 
 
+#Contiguous Allocation
 
+    
 
 
 

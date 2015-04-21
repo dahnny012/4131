@@ -3,11 +3,26 @@ import io,os,sys
 import threading
 import traceback
 
-HOST = "kh4250-20"
-PORT = 1337
+HOST = "127.0.0.1"
+PORT = 8080
 EVENT  = 0
 CONTENTS = 1
 COMMAND = 0
+
+host = input('Enter a host, blank for localhost: ')
+port = input('Enter a port, blank for 8080: ')
+if host:
+	HOST = host
+if port:
+	error = True
+	while error:
+		try:
+			port = int(port)
+			error = False
+		except:
+			port = input('Enter a port, blank for 8080: ')
+	PORT = port
+
 
 class Token:
 	def createToken(self,data):
@@ -32,7 +47,7 @@ class FtpClient:
 		self.handlers["quit"] = self.disconnect
 		self.request = ""
 		return
-	def run(self):
+	def run(self):		
 		self.login()
 		self.process()
 		return
@@ -77,6 +92,7 @@ class FtpClient:
 			self.socket.connect((HOST, PORT))
 		except:
 			print("Error connecting")
+			sys.exit()
 			 
 		  
 	def sign(self):
@@ -106,7 +122,7 @@ class FtpClient:
 			self.ls(None)
 			return True
 		except:
-			print("error on upload")
+			print("Could not upload your file. It may not exist")
 			return False
 	def download(self,header):
 		self.sign()
@@ -125,19 +141,18 @@ class FtpClient:
 		return True
 	
 	def recFile(self,fn):
-		if(self.fileError()):
-			print("Server could not process your request")
+		if not self.fileError():
+			print("Server could not process your request, file may not exist")
 			return False
-		with open("rec.jpg","wb") as file:
+		with open(fn,"wb") as file:
 			while(True):
 				buf = self.recieve(1024)
 				if not buf:
 					break
 				file.write(buf)
 	def fileError(self):
-		buf = self.recieve(64).decode("ASCII")
-		buf = buf.split(" ")
-		return buf[EVENT] == "ERROR"
+		buf = self.recieve(2).decode("ASCII")
+		return buf == "OK"
 		
 	def close(self):
 		self.socket.close()

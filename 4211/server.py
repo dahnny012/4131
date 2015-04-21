@@ -5,7 +5,8 @@ from os import walk
 import threading
 import traceback
 
-PORT = 1337
+HOST = socket.gethostname()
+PORT = 8080
 USER = 1
 PASSWORD = 2
 COMMAND = 0
@@ -13,6 +14,50 @@ TOKEN = 1
 HEADER =  0
 CONTENTS = 1
 EXCESS = 3
+QUIT = False
+ALIVE = True
+
+host = input('Enter a host, blank for current host: ')
+port = input('Enter a port, blank for 8080: ')
+
+if host:
+	HOST = host
+if port:
+	error = True
+	while error:
+		try:
+			port = int(port)
+			error = False
+		except:
+			port = input('Enter a port, blank for 8080: ')
+	PORT = port
+	
+class Console:
+	def __init__(self):
+		self.handles = {}
+		self.handles["ls"] = self.list
+		self.handles["quit"] = self.quit
+		self.status = ALIVE
+	def run(self):
+		while self.status:
+			try:
+				command = input('Enter a command ')
+				self.handles[command]()
+			except:
+				print("Please enter a valid command")
+		os._exit(1)
+	def list(self):
+		f = []
+		for (dirpath, dirnames, filenames) in walk(os.getcwd()):
+				f.extend(filenames)
+				break
+		print("\n".join(f))
+		return 1
+	def quit(self):
+		self.status = QUIT
+		
+	
+	
 
 class Tokens:
 	def __init__(self):
@@ -20,6 +65,8 @@ class Tokens:
 		self.tokens = {}
 	def createToken(self):
 		token = randint(1000,9999)
+		while token in self.tokens:
+			token = randint(1000,9999)
 		self.tokens[token] = token
 		return str(token)
 	def checkToken(self,token):
@@ -44,7 +91,7 @@ class FtpServer:
 		self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		self.socket.bind((socket.gethostname(),PORT))
 		self.socket.listen(10)
-		print("Starting server " + socket.gethostname() + " at Port: " + str(PORT))
+		print("Starting server " + HOST + " at Port: " + str(PORT))
 		self.tokens = Tokens()
 		self.handles = {}
 		self.handles["login"] = self.login
@@ -53,17 +100,24 @@ class FtpServer:
 		self.handles["download"] = self.download
 		
 	def run(self):
+		console = Console()
+		console_thread = threading.Thread(target=console.run, args=())
+		console_thread.start();
 		while True:
 			client_socket,address = self.socket.accept()
 			t = threading.Thread(target=self.route, args=(client_socket,))
-			t.run();
+			t.daemon = True
+			t.start();
 			
 	def route(self,client):
-		header = client.recv(64)
-		header = header.decode("utf-8")
-		args = header.split("\n")[0].split(" ")
-		print("Routing to " + args[COMMAND])
-		self.handles[args[COMMAND]](client,header)
+		try:
+			header = client.recv(64)
+			header = header.decode("utf-8")
+			args = header.split("\n")[0].split(" ")
+			print("Routing to " + args[COMMAND])
+			self.handles[args[COMMAND]](client,header)
+		except:
+			traceback.print_exc()
 		return
 	
 	def login(self,client,header):
@@ -99,12 +153,12 @@ class FtpServer:
 			print(msg)
 			headerEnd = msg.find("\r")
 			header = msg[0:headerEnd]
-			file = header.split("\n")[0].split(" ")[CONTENTS]
+			fn = header.split("\n")[0].split(" ")[CONTENTS]
 			excess = bytes(msg[headerEnd+1:],'ASCII')
 			print(excess)
 			#should be not but well ignore for now.
-			if os.path.isfile(file):
-				with open("uploaded.jpg" , "wb") as file:
+			if not os.path.isfile(fn):
+				with open(fn , "wb") as file:
 					file.write(excess)
 					while True:
 						buf = client.recv(1024)
@@ -131,7 +185,6 @@ class FtpServer:
 							break
 						client.send(buf)
 			except:
-				traceback.print_exc()
 				client.send(bytes("ERROR","ASCII"))
 		else:
 			print("token rejected")
@@ -154,6 +207,8 @@ class FtpServer:
 		args = request.split("\n")
 		token = args[TOKEN]
 		return self.tokens.checkToken(token)
+
+
 
 server = FtpServer()
 server.run()

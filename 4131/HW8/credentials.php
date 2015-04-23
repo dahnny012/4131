@@ -1,53 +1,54 @@
 <?php
-    $REGD = 2;
-    $NEW = 1;
+	define("REGD", 1);
+    define("NEWD", 2);
     session_start();
     ini_set('display_errors','1'); error_reporting(E_ALL);
     $errorFlag = false;
     
-    if(isset($_SESSION["vote"] && isset($_SESSION['name']))){
+    if(isset($_SESSION["vote"]) && isset($_SESSION['email'])){
         header("Location: Voting.php");
     }
     
-    if(!isset($_SESSION["vote"] && isset($_SESSION['name']))){
+    if(!isset($_SESSION["vote"]) && isset($_SESSION['email'])){
         header("Location: Results.php");
     }
     
     
     $status = valid($_POST);
     
-    if(!empty($_POST) && $status == $NEW){
+    if(!empty($_POST) && $status == NEWD){
+		echo "NEW";
         $_SESSION['email'] = $_POST['email'];
         $_SESSION['name'] = $_POST['name'];
         $_SESSION['vote'] = true;
         header("Location: Voting.php");
     }else{
-        if($status == $REGD){
+        if($status == REGD){
+			echo "REG";
             $_SESSION['email'] = $_POST['email'];
             $_SESSION['name'] = $_POST['name'];
             header("Location: Results.php");
         }
-        else{
+        else if(!empty($_POST)){
             $errorFlag = true;
         }
     }
     
     function valid($info){
-        if(strlen($info['name']) <= 0 
-        || !preg_match("/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/",$info["email"] 
-        || !preg_match("/^[A-z ]+$/",$info["name"] 
-        || strlen($info['email'] <= 0))){
+        if(empty($info['name']) 
+        || !preg_match("/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/",$info["email"])
+        || !preg_match("/^[A-z ]+$/",$info["name"] )
+        || empty($info['email'])){
             return 0;
         }
         include "connection.php";
-        $exists = $db->prepare("Select Name,Email from Users where Name = ? and Email = ?");
-        $exists->bindParam(1,$info["name"]);
-        $exists->bindParam(2,$info["email"]);
+        $exists = $db->prepare("Select Email from USER where Email = ?");
+        $exists->bindParam(1,$info["email"]);
         $exists->execute();
-        if($count = $exists->rowCount()){
-            return $REGD;    
+        if($exists->rowCount()){
+            return REGD;    
         }
-            return $NEW;
+            return NEWD;
     }
 ?>
 

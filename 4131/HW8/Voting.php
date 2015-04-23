@@ -1,6 +1,7 @@
 <?php
-$REGD = 2;
-$NEW = 1;
+ini_set('display_errors','1'); error_reporting(E_ALL);
+define("REGD", 1);
+define("NEWD", 2);
 $msg = "";
 session_start();
 
@@ -8,12 +9,12 @@ if(!isset($_SESSION["name"]) || !($_SESSION["email"])){
     header("Location: logout.php");
 }
 
-if(!isset($_SESSION["vote"] && !isset($_SESSION['name']))){
+if(!isset($_SESSION["vote"]) && !isset($_SESSION['name'])){
     header("Location: credentials.php");
 }
 
-if(!isset($_SESSION["vote"] && isset($_SESSION['name']))){
-    header("Location: results.php");
+if(!isset($_SESSION["vote"]) && isset($_SESSION['name'])){
+    header("Location: Results.php");
 }
 
 
@@ -21,23 +22,30 @@ if(!isset($_SESSION["vote"] && isset($_SESSION['name']))){
 if(!empty($_POST)){
     include "connection.php";
     
-    $allowed = ["Indian","Chinese","Mexican","Italian","Thai"];
-    if(!in_array($_POST["cuisine"],$allowed)){
-        echo "Nice Sql Injection <br>";
-        return;
-    }
-    $insert = $db->prepare("INSERT INTO Users VALUES (?,?)");
-    $insert->bindParam(1,$_SESSION['name']);
-    $insert->bindParam(2,$_SESSION['email']);
+
+    $insert = $db->prepare("INSERT INTO USER VALUES (?,?)");
+    $insert->bindParam(1,$_SESSION['email']);
+    $insert->bindParam(2,$_SESSION['name']);
     $insert->execute();
+    if($insert->rowCount() == 1){
+		$insert2 = $db->prepare("Update VOTES Set Num_Votes = Num_Votes + 1 Where Category = ?");
+		$insert2->bindParam(1,$_POST['cuisine']);
+		$insert2->execute();
+		
+		if($insert2->rowCount() < 1){
+			$backtrack = $db->prepare("DELTE FROM USER WHERE Email = ?");
+			$backtrack->bindParam(1,$_SESSION['email']);
+			$backtrack->execute();
+			$msg = "Could not add your vote";
+		}else{
+			unset($_SESSION["vote"]);
+			header("Location: Results.php");
+		}
+	}else{
+		$msg = "Could not add your vote";
+	}
     
-    $insert2 = $db->prepare("Update Vote Set Category=?,Num_Votes = Num_Votes + 1 Where Category = ?");
-    $insert2->bindParam(1,$_POST['cuisine']);
-    $insert2->bindParam(2,$_POST['cuisine']);
-    $insert2->execute();
     
-    unset($_SESSION["vote"]);
-    header("Location: Results.php");
 }else{
     if(empty($_POST)){
         $msg = "Please make a selection";
@@ -72,16 +80,16 @@ if(!empty($_POST)){
             </nav>
               <div class="col s12">
                   <form method="POST" action="Voting.php">
-                      <div class="input-field col s3 offset-s4">
+                      <div class="input-field col s5 offset-s4">
                           <div class="card">
                               <div class="card-content  grey lighten-5">
                                 <h5>What is your favorite cuisine?</h5>
-                                <h5>
+                                <div>
                                     <?php 
                                     if($msg != "")
                                         echo $msg;
                                     ?>
-                                </h5>
+                                </div>
                                 <input class="red" name="cuisine" value="Indian" type="radio" id="r1"/>
                                 <label for="r1">Indian</label>
                                 <p>
@@ -101,7 +109,7 @@ if(!empty($_POST)){
 
                       </div>
                       
-                      <div class="input-field col s3 offset-s5">
+                      <div class="input-field col s5 offset-s4">
                           <button id="submit" class="btn red accent-4" type="submit" name="action">
                               Submit
                           </button>

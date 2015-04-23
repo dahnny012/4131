@@ -1,12 +1,13 @@
 <?php 
 session_start();
+ini_set('display_errors','1'); error_reporting(E_ALL);
 
-if(!isset($_SESSION["email"] || !isset($_SESSION['name']))){
+if(!isset($_SESSION["email"]) || !isset($_SESSION['name'])){
     header("Location: credentials.php");
 }
 
 
-if(isset($_SESSION["vote"] && isset($_SESSION['name']))){
+if(isset($_SESSION["vote"]) && isset($_SESSION['name'])){
     header("Location: Voting.php");
 }
 
@@ -41,18 +42,19 @@ if(!isset($_SESSION["vote"])){
                 </div>
             </nav>
               <div class="row container">
-                  <div>
+                  <div class="col s5 offset-s7">
                  <?php 
                     if($msg != ""){
                         echo $msg;
                     }
                  ?>
                  </div>
-                 <div class="col s5 offset-s5">
+                 <div class="col card grey lighten-5 s10 offset-s4">
                      <?php
-                     makeGraph();
-                     function makeGraph(){
-                         $select = $db->prepare("SELECT * from Votes");
+                     include "connection.php";
+                     makeGraph($db);
+                     function makeGraph($db){
+                         $select = $db->prepare("SELECT * from VOTES");
                          $select->execute();
                          $values= array();
                          $total = 0;
@@ -61,17 +63,18 @@ if(!isset($_SESSION["vote"])){
                              $total += intval($row['Num_Votes']);
                          }
                          foreach($values as $key => $val){
-                             makeRow($key,$val/$total,$val);
+                             makeRow($key,$total,$val,$db);
                          }
                      }
                      
-                     function makeRow($label,$percent,$votes){
+                     function makeRow($label,$total,$votes,$db){
+						 $percent = floatval($votes/$total)*100;
+						 echo $label." : ".$votes." Votes" ;
                          ?>
                          <div class="progress red lighten-5">
-                              <div class="determinate red" style="width: "<?php echo $percent."%"; ?>";"></div>
+                              <div class="determinate red" style="width: <?php echo $percent."%"; ?>;"></div>
                          </div>
                          <?php
-                         echo $label." : ".$votes." Votes" ;
                      }
                      ?>
                  </div>

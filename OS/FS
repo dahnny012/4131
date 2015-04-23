@@ -304,7 +304,68 @@ OWARIMASU!
 
 #Contiguous Allocation
 
+    .......
     
+#Caching and Buffering
+
+    When a file is read in by a process:
+        data may be accessed multipel timesb y the process
+        data may be accessed by other processes
+        
+    When a file is written by a process:
+        Data may be used again in the near future
+        Sync write to disk may be slow
+        
+    Would like to cache file data
+        Going back to disk will be slow
+        
+    Buffer cache
+        Disk blocks are kept in memory
+        
+#Memory Mapping
+
+    A file is mapped to a region of virtual memory
+        File i/o is done read/write to memory region
+        
+    Page Cache
+        File contents are cached in units of pages
+        can be managed by virtual memory system
+    
+
+#Unified Buffer Cache
+
+    What if we have seperate buffer cache and page cache?
+    Where does data get cached for:
+        regular I/O via read/write syscalls
+        memory-mapped file i/o via virtual addresses
+    
+    Double caching: Same data is duplicated in both
+    buffer and page cache.
+
+
+#Caching Issues
+
+    How to parition mmeory between process pages and file system page cache
+        tradeoff between thrashing and io performance
+        
+    WHen to write data from cache to disk.
+        sync:written directly to disk in order
+        async:written from cache later,maybe out-of-order
+        
+    
+    Cache Replacment:
+        Sequential-access file: LRU?
+            doesnt matter
+        Free-behind/read-ahead: free blocks as read,prefetch subsequent blocks.
+        
+#File System Recovery
+
+
+
+#Consistency CHecking
+
+    
+
 
 
 

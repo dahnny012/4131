@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Editing Page</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/css/materialize.min.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/js/materialize.min.js"></script>
+  <script type="text/javascript" src="js/script.js"></script>
+  <meta charset="utf-8">
+</head>
+
+<body>
+  <div class="">
+    <div class="row">
+      <nav>
+        <div class="nav-wrapper red accent-4">
+          <a href="#" class="brand-logo">Editing</a>
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+          </ul>
+        </div>
+      </nav>
+      <div class="col card-panel red accent-4 white-text s3">
+        {{msg}}
+      </div>
+      <div class="col s12 card">
+        <h3>List of Restaurants</h3>
+          <table class="bordered">
+            <thead>
+              <th>Restaurant</th>
+              <th>Description</th>
+              <th>Address</th>
+              <th>Contact Number</th>
+              <th>Rating</th>
+              <th>Weekly Schedule</th>
+              <th>Action</th>
+              {{data}}
+            </thead>
+          </table>
+      </div>
+      <div class="row">
+        <div class="col s12">
+          <div class="card ">
+            <div class="card-content">
+              <h5>
+                Add a new restaurant
+              </h5>
+              <div id="add_new">
+                <form action="restaurants_controller.php" method="POST">
+                  <div class="row">
+                    
+                    <div class="col s3">
+                   <input name ="name" 
+                    type="text" data-position="right"
+                    autocomplete="off">
+                    <label for="name">Name</label>
+                    </div>
+                    
+                    <div class="col s3">
+                   <input name ="type" 
+                    type="text" data-position="right"
+                    autocomplete="off">
+                    <label for="type">Type</label>
+                    </div>
+                    
+                    <div class="col s3">
+                   <input name ="url" 
+                    type="text" data-position="right"
+                    autocomplete="off">
+                    <label for="url">URL</label>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="col s3">
+                   <input name ="ratings" 
+                    type="text" data-position="right"
+                    autocomplete="off">
+                    <label for="ratings">Rating</label>
+                    </div>
+                    
+                    <div class="col s3">
+                   <input name ="phone" 
+                    type="text" data-position="right"
+                    autocomplete="off">
+                    <label for="phone">Phone</label>
+                    </div>
+                    
+                    
+                    <div class="col s3">
+                   <textarea id="textarea1" name="address" class="materialize-textarea"></textarea>
+                    <label for="textarea1">Address</label>
+                    </div>
+                    
+                    <div class="col s3">
+                   <textarea id="textarea2" name="hours" class="materialize-textarea"></textarea>
+                    <label for="textarea2">Hours</label>
+                    </div>
+                    
+                    <div class="col s1 offset-s11">
+                     <button class='btn-floating btn-large red accent-4'><i class="large mdi-content-add"></i></button>
+                    </div>
+                    </div>
+                    
+                    <input type="hidden" value="add" name="command">
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+         <div class="col s12">
+          <div class="card ">
+            <div class="card-content">
+              <h5>
+                Testing Functions
+                <div>
+                  <button onclick="fillAddValid()" class='btn btn-large red accent-4'>Fill add valid</button>
+                </div>
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+
+</html>

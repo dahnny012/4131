@@ -3,7 +3,7 @@
 		"name": "Chipotle",
 		"type": "American",
 		"address": "2001 SE University Ave Ste 100 Minneapolis, MN 55455",
-		"phone": "(612) 617-9464",
+		"phone": "612-617-9464",
 		"rating": "3",
 		"hours": [
 				{"day": "Mon-Sun", "time": "11:00am - 10:00pm"}
@@ -16,7 +16,7 @@
 		"name": "Raising Cane's",
 		"type": "American",
 		"address": "825 Washington Ave SE, Minneapolis, MN 55455",
-		"phone": "(612) 378-3243",
+		"phone": "612-378-3243",
 		"rating": "4",
 		"hours": [
 				{"day": "Mon-Thu", "time": "10:30am - 11:00am"},
@@ -31,7 +31,7 @@
 		"name": "Pagoda",
 		"type": "Japanese/Malaysian",
 		"address": "1417 SE 4th St, Minneapolis, MN 55455",
-		"phone": "(612) 378-4710",
+		"phone": "612-378-4710",
 		"rating": "3",
 		"hours": [
 				{"day": "Mon-Thur", "time": "11:00am - 10:00pm"},
@@ -47,7 +47,7 @@
 		"name": "Tamarind",
 		"type": "Indian",
 		"address": "99 Hudson St, New York, NY 10013",
-		"phone": "(212) 775-9000",
+		"phone": "212-775-9000",
 		"rating": "4",
 		"hours": [
 				{"day": "Mon-Thur", "time": "11:00am - 10:00pm"},
@@ -63,7 +63,7 @@
 		"name": "The Cheesecake Factory",
 		"type": "American (Traditional)",
 		"address": "2715 Southdale Center, Edina, MN 55435",
-		"phone": "(952) 653-3333",
+		"phone": "952-653-3333",
 		"rating": "3.5",
 		"hours": [
 				{"day": "Mon-Thur", "time": "10:00am - 11:00am"},

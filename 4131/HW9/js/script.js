@@ -123,6 +123,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
 });
 
+function resetDB(){
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', "resetDB.php", true);
+	xhr.onload = function (res) {
+		window.location = "restaurants_controller.php"
+	}
+	xhr.send();
+}
 
 function fillAddValid(){
     var form = $("#add_new").find("input");

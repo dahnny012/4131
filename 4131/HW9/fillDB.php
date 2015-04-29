@@ -1,9 +1,10 @@
 <?php 
 include "database.php";
 
-$drop = prepare("DELETE FROM tbl_restaurants WHERE 1=1");
+/*
+$drop = $db->prepare("DELETE FROM tbl_restaurants WHERE 1=1");
 $drop->execute();
-
+*/
 
 $json = file_get_contents("new_restaurants.json");
 $data = json_decode($json)->restaurants;

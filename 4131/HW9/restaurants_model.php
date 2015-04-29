@@ -28,8 +28,8 @@ class Model{
         $values = array_keys($data);
         foreach($values as $key){
             $target = ":$key";
-            $cleanData = Security::check($data[$key],$key);
-            if($cleanData){
+            $data[$key] = Security::check($data[$key],$key);
+            if(!empty($data[$key])){
                 $edit->bindParam($target,$data[$key]);
             }else{
                 return ERROR;
@@ -59,17 +59,16 @@ class Model{
             $count =1;
             $values = array_keys($data);
             foreach($values as $key){
-                if(!empty($data[$key])){
-                    if(!Security::check($data[$key],$key)){
-                        return ERROR;
-                    }
-                    $add->bindParam($count,$data[$key]);
-                    $count++;
-                }
+				$data[$key] = Security::check($data[$key],$key);
+				if(empty($data[$key])){
+					return ERROR;
+				}
+				$add->bindParam($count,$data[$key]);
+				$count++;
             }
             $add->execute();
             if($add->rowCount() < 1){
-                return error("Restaurant already exists");
+                return error("Restaurant may already exist");
             }
         }
     }
@@ -139,7 +138,6 @@ function error($err){
 
 class Security{
     private static $urlRegex = "/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/";
-    private static $textRegex = "/^<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)$/";
     private static $phoneRegex = "/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/";
     private static $ratingRegex = "/^\d+(\.)?\d*$/";
     private static $initialized = false;
@@ -157,25 +155,26 @@ class Security{
         }
         switch($type){
             case "url":
-                if(!preg_match(self::$urlRegex,$input))
-                    return error("Enter a Valid Url");
+                if(!preg_match(self::$urlRegex,$input)){
+                    error("Enter a Valid Url");
+                    return "";
+                 }
                 break;
             case "phone":
                 if(!preg_match(self::$phoneRegex,$input)){
                     return error("Enter a Valid Phone Number");
+                    return "";
                 }
                 break;
             case "ratings":
                 if(!preg_match(self::$ratingRegex,$input)){
                     return error("Enter a Valid Rating");
+                    return "";
                 }
                 break;
             default:
-                if(preg_match(self::$textRegex,$input)){
-                    return error("Please Refrain from HTML");
-                }else{
-                    $input = nl2br($input);
-                }
+                $input = strip_tags($input,"<br></br>");
+                $input = nl2br($input);
         }
         return $input;
     } 

@@ -89,7 +89,8 @@ class Model{
         $buffer = $this->template;
         foreach($values as $key){
             $regex = "/{{".$key."}}/";
-            $buffer = preg_replace($regex,$row[$key],$buffer);
+            $data = nl2br(trim($row[$key]));
+            $buffer = preg_replace($regex,$data,$buffer);
         }
         return $buffer;
     }
@@ -173,8 +174,8 @@ class Security{
                 }
                 break;
             default:
-                $input = strip_tags($input,"<br></br>");
-                $input = nl2br($input);
+                $input = strip_tags($input);
+                //$input = nl2br($input);
         }
         return $input;
     } 

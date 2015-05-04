@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
     
     function inputOn(parent){
-        var nextParent = parent.parentNode;
+        var nextParent = parent.parentNode.parentNode;
         var defaultNodes =nextParent.getElementsByClassName("default");
         var modNodes = nextParent.getElementsByClassName("mod");
         var size = defaultNodes.length;
@@ -103,6 +103,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
             if(node.className === BUTTON){
                 node.style.display = "inline";
             }else{
+                var newlineRegex = /<br \/>/g;
+                node.value = node.value.replace(newlineRegex,"\n");
                 node.style.display = "block";
             }
         }

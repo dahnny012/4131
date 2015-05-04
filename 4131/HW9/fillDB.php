@@ -31,7 +31,7 @@ foreach($data as $entry){
 function mergeHours($hours){
     $buffer = "";
     foreach($hours as $day){
-        $buffer .= $day->day." : ".$day->time."<br>"; 
+        $buffer .= $day->day." : ".$day->time."\n"; 
     }
     return $buffer;
 }

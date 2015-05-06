@@ -433,7 +433,7 @@ Two key router functions:
 	
 #Input Port Functions
 	
-Decentralized switching:
+##Decentralized switching:
 	given datagram dest., lookup ouput port
 	using forwarding table in input port memory
 	
@@ -443,7 +443,7 @@ Decentralized switching:
 	rate into switch fabric. 
 	
 ##Input port 
-Line Termination -> Data link Processing -> Lookup Forwarding
+	Line Termination -> Data link Processing -> Lookup Forwarding
 
 
 #Output Ports
@@ -451,12 +451,12 @@ Line Termination -> Data link Processing -> Lookup Forwarding
 ## Diagram
 	queuing/buffer manager -> data link processing -> line termination ->
 
-Buffering 
+##Buffering 
 	required when datagrams arrive from fabric 
 	faster than the  transmission rate
-	
-Scheduling Discipline
+		
+##Scheduling Discipline
 	chooses among queued datagrams from transmission
-	
+		
 	
 	

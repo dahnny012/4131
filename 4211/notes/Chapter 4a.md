@@ -378,17 +378,17 @@ ICMP protocol:
 	
 #IP Datagram Format
 
-[version | head len | type of service | length]
+version | head len | type of service | length
 	length is total datagram length (16 bit max)
-[16 bit identifier | flgs | fragment offset]
+16 bit identifier | flgs | fragment offset
 	All used for fragmentation/reassembly
-[time to live | upper layer | Internet checksum]
+time to live | upper layer | Internet checksum
 	time to live = max number of remaining hops
 	upplayer = upper later protocol to deliver payload to	
-[32 bit IP Src]
-[32 bit IP Dest]
-[Options]
-[data]
+32 bit IP Src
+32 bit IP Dest
+Options
+data
 
 How much overhead with TCP?
 	20 bytes TCP

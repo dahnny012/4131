@@ -1,0 +1,73 @@
+Danh Nguyen
+nguy1952@umn.edu
+CSCI 4707
+
+
+
+1) What is 1-persisent CSMA? Under what condition in terms of traffic load, 1-
+persistent CSMA will outperform non-persistent CSMA? Why?
+
+Aloha is a protocol to distribute access over a shared broadcast channel. 
+CSMA will listen instead first before sending to avoid collisions. 
+1-persistent CSMA will send as soon as channel is idle. This will outperform
+non-persistent CSMA when traffic is heavily idle. Because non-persistent CSMA
+will waste time just waiting even when traffic is heavily idle. When traffic
+is heavily idle then 1-persistent CSMA will not have too many problems with
+collisions.
+
+
+
+2) CSMA/CD: Suppose a CSMA/CD network is running at 100Mbps over a
+1000m cable with no repeaters. The signal speed in the cable is 200,000
+km/sec. Compute the following parameters:
+
+a. End-to-end propagation delay.
+
+Propagation delay = 1000/200,000 = .005 ms
+
+b. Worst-case collision detection time
+
+2 times the propagation delay = .01 ms
+
+c. Minimum frame size
+
+(Worst-case collision detection time) * (Link Speed) = Minimum Frame size
+
+.01 ms * 100 Mbps = 1kb Frame size.
+
+
+3) Describe IEEE 802.4 network (Token Bus). Please pay attention to how the
+network operates and how to make sure the network to be reliable.
+
+A token ring protocol allows a holder of to transmit information on the medium.
+The token bus networks implements this protocol on a wired network. A user on 
+the network has to have a token that it transmits and it must know the address
+of all nodes neighboring it.If a node does not have anything to send 
+then the token is passed onto it's neighbor. 
+
+The network is unreliable because there is a single point of failure. If a 
+the node with the token fails then network can no longer allow communication.
+A fix to this problem is to spawn/recreate a token when one gets lost.
+
+A solution to fixing a lost token in a failed node is to implement a monitor.
+The monitor will keep track of where the current token is and regenerate a
+token. If the monitor goes down then turn a node in the token ring into a 
+monitor.
+
+
+4)
+A CDMA receiver get the following chips: (+1 -1 +3 -1 +1 +3 -1 -1).
+Assuming the chip sequence defined as follows:
+     (1 -1  3 -1  1  3-1 -1).
+- A: (-1 1 -1 -1 -1 -1 1 -1) -1 -1 -3 1 -1 -3 -1 1 = -8/8  = -1
+- B: (-1 1 -1  1  1  1-1 -1) -1 -1 -3-1  1  3  1 1 = 0
+- C: (-1 -1 1 -1 1 1 1 -1)   -1  1  3 1  1  3 -1 1 = 8/8 = 1
+- D: (-1 -1 -1 1 1 -1 1 1)   -1  1 -3 -1 1 -3 -1 -1 = -8/8 = -1
+
+Which stations are transmitting and what bit was sent by each transmitting
+station?
+
+A transmitting 0
+B transmitting nothing
+C transmitting 1
+D transmitting 0

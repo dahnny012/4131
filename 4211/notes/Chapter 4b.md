@@ -11,11 +11,19 @@
 
 ##Broadcast and Multicast Routing
 
+
 #Routing and Forwarding:
 ##Logical View of a router
 
 	1st Layer:
-		sddsasda
-	
+		Routing information
+			Routing agent --> updates
+				Routing table
 	2nd Layer:
-		sdfsdfds
+		Input Links 
+			--> look up forwarding table
+				---> gets up update from routing table(1st layer)
+			
+			Switching Fabric | Data Plane
+				Output link
+		

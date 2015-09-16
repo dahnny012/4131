@@ -82,3 +82,5 @@ or be called a monster.
 
 ## Theses 6: Fear of the Monster is Really a kind of Desire.
 
+### Naturally humans are attracted to which taboo/forbidden so their
+### fear of the monster is like desire.

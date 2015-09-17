@@ -21,12 +21,12 @@
 ### Monsters  reappear to push social agendas.
 	
 - Same monsters reappear throughout history/ a story.
-		1. Nosferatu in face of fascism
-		2. Anne Rice rewriting vampires homosexuality and vampires
-		3. Francis Coppola's [Bram stokers Dracula]
-			- Presented aids as cause for vampirism
-			- Making aids documentary at the time.
-			
+1. Nosferatu in face of fascism
+2. Anne Rice rewriting vampires homosexuality and vampires
+3. Francis Coppola's [Bram stokers Dracula]
+	- Presented aids as cause for vampirism
+	- Making aids documentary at the time.
+	
 ## Theses 3: The Monster is the harbinger of category crisis
 
 ### "Monsters always escape because it refuses easy categorization"
